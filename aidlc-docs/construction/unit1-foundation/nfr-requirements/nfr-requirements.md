@@ -51,7 +51,7 @@
 - CloudFront: デフォルト設定（自動スケーリング）
 - API Gateway: 2層スロットリング構成
   - ステージレベル（全体）: 500 req/sec、バースト 1000
-  - ユーザーレベル: 100 req/sec（Cognito sub による Lambda Authorizer 内チェック。詳細は NFR Design で設計）
+  - ユーザーレベル: 100 req/min（Cognito sub による Lambda ハンドラー内ミドルウェアチェック。詳細は NFR Design で設計済み）
 
 ---
 

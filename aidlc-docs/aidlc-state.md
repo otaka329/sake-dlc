@@ -41,8 +41,8 @@
 ### 🟢 CONSTRUCTION PHASE (per-unit)
 - [x] Functional Design - Unit 1 Foundation
 - [ ] Functional Design - Unit 2〜6
-- [ ] NFR Requirements - EXECUTE
-- [ ] NFR Design - EXECUTE
+- [x] NFR Requirements - Unit 1 Foundation
+- [x] NFR Design - Unit 1 Foundation
 - [ ] Infrastructure Design - EXECUTE
 - [ ] Code Generation - EXECUTE
 - [ ] Build and Test - EXECUTE
@@ -52,6 +52,6 @@
 
 ## Current Status
 - **Lifecycle Phase**: CONSTRUCTION
-- **Current Stage**: NFR Requirements - Unit 1 Foundation
-- **Next Stage**: NFR Design - Unit 1 Foundation
-- **Status**: NFR Requirements レビュー完了、承認待ち。次回は NFR Requirements 承認 → NFR Design に進行
+- **Current Stage**: Infrastructure Design - Unit 1 Foundation
+- **Next Stage**: Code Generation - Unit 1 Foundation
+- **Status**: NFR Design 承認完了。次回は Infrastructure Design - Unit 1 Foundation から開始。リマインダー: (1) Inception正本同期（テーブル数6→5、Lambda数30、SakenowaCache PITR無効）、(2) CSP unsafe-inline除去はCode Generationに持ち越し、(3) Gateway Response 7種はapi-gatewayモジュールで具体化

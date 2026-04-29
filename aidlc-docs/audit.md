@@ -417,3 +417,97 @@
 **Context**: Session pause. CONSTRUCTION Phase - Unit 1 Foundation - NFR Requirements 承認待ち
 
 ---
+
+## Session Resume
+**Timestamp**: 2026-04-29T10:00:00Z
+**User Input**: "作業を再開したいです。"
+**AI Response**: セッション再開。前回の中断ポイントを確認: CONSTRUCTION Phase - Unit 1 Foundation - NFR Requirements 承認待ち。
+**Context**: Session continuity - aidlc-state.md と audit.md を読み込み、現在の状態を復元。
+
+---
+
+## Unit 1 Foundation - NFR Requirements Approved
+**Timestamp**: 2026-04-29T10:01:00Z
+**User Input**: "承認します。後続作業をお願いします。"
+**AI Response**: NFR Requirements 承認。aidlc-state.md を更新し、NFR Design に進行。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Requirements Complete - Approved
+
+---
+
+## Unit 1 Foundation - NFR Design Plan & Questions Created
+**Timestamp**: 2026-04-29T10:02:00Z
+**AI Response**: NFR Design計画と5問の質問を作成。質問内容: (1) Lambdaミドルウェアパターン, (2) APIエラーレスポンス形式, (3) FE APIクライアント層, (4) DynamoDBテーブル設計, (5) CloudFrontセキュリティヘッダー設定方法
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Design Steps 1-4
+
+---
+
+## Unit 1 Foundation - NFR Design Answers
+**Timestamp**: 2026-04-29T10:03:00Z
+**User Input**: ファイルに直接記入。Q1: C（AWS Powertools for TypeScript）, Q2: B（カスタムJSON形式）, Q3: B（ky fetch ラッパー）, Q4: C（ハイブリッドテーブル設計）, Q5: A（CloudFront Response Headers Policy）
+**AI Response**: 回答分析完了。矛盾・曖昧点なし。成果物生成に進行。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Design Step 5
+
+---
+
+## Unit 1 Foundation - NFR Design Complete
+**Timestamp**: 2026-04-29T10:04:00Z
+**AI Response**: NFR Design成果物を生成。nfr-design-patterns.md（7セクション: レジリエンス、セキュリティ、パフォーマンス、スケーラビリティ、可観測性、CloudFrontヘッダー、テスト可能プロパティ）。logical-components.md（6セクション: BEミドルウェア、DynamoDBアクセス層、エラーハンドリング、FEコンポーネント、PWA、インフラ構成）。主な設計決定: AWS Powertools採用、ky APIクライアント、DynamoDB 6→4テーブル統合（ハイブリッド設計）、CloudFront Response Headers Policy、ユーザーレベルレート制限（スライディングウィンドウ）。SECURITY-01〜15準拠検証済み。PBT-01準拠（6つのテスト可能プロパティ特定）。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Design Step 7
+
+---
+
+## Unit 1 Foundation - NFR Design Change Request (SakenowaCache テーブル消失修正)
+**Timestamp**: 2026-04-29T10:05:00Z
+**User Input**: "M1. SakenowaCache テーブルが設計から消失している問題: nfr-design-patterns.md §3.3 の統合表で SakenowaCache が脱落。Inception 正本（application-design.md, components.md, requirements.md）では6番目のテーブルとして明示。統合後の4テーブルにも格納先なし。修正案(a) AppData統合、(b) 独立テーブル維持（推奨）、(c) S3+CloudFrontキャッシュ置換の3案提示。"
+**AI Response**: 案(b) 独立テーブル維持を採用。SakenowaCache はグローバルデータ（PK: dataType）であり、AppData（PK: userId）とキースキーマが異なるため統合不適。4テーブル→5テーブルに修正。NFR Design 成果物を更新し、Infrastructure Design Plan に Inception 正本同期ステップを追記。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Design - Change Request (SakenowaCache)
+
+---
+
+## Unit 1 Foundation - NFR Design Review Observations
+**Timestamp**: 2026-04-29T10:06:00Z
+**User Input**: "観察1: sync-sakenowa-data Lambda の所有ユニット — Unit 3 スコープだが Unit 1 のスキーマ先取り定義方針と整合。問題なし。観察2: Inception 正本の同期はまだ未実施 — Infrastructure Design Plan に同期ステップを必ず含めること。具体的に: (1) application-design.md テーブル列挙を5テーブル化, (2) requirements.md §7 テーブル数を5に更新, (3) components.md CM-02 に SakenowaCache テーブル明示。"
+**AI Response**: 観察1は同意（問題なし）。観察2について logical-components.md §6 の Infrastructure Design Plan 同期ステップリストを拡充。application-design.md テーブル列挙、components.md CM-02 明示、requirements.md §7 テーブル数、Lambda 数（30）の同期を明記。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Design - Review Observations
+
+---
+
+## Unit 1 Foundation - NFR Design Change Request (Medium 4点)
+**Timestamp**: 2026-04-29T10:07:00Z
+**User Input**: "Md1: API Gateway デフォルトエラーがカスタム形式にならない — Gateway Response で全エラータイプにカスタム形式を適用する設計追加。Md2: レート制限の Lambda Authorizer 内 DynamoDB アクセスがレイテンシ増加要因 — Authorizer キャッシュとレート制限ウィンドウの不整合、アトミック増分未明記。Md3: CSP style-src 'unsafe-inline' の根拠未記載 — XSS緩和を弱める設定の正当化が必要。Md4: CORS 設定の二重管理 — API Gateway + Lambda の両方で管理は不整合リスク。"
+**AI Response**: 4点すべて修正。Md1: Gateway Response 設計を追加。Md2: レート制限をミドルウェア層に移動、アトミック演算明記。Md3: unsafe-inline の根拠明記 + 本番 nonce 化検討を追記。Md4: CORS を API Gateway 側に集約。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Design - Change Request (Medium 4点)
+
+---
+
+## Unit 1 Foundation - NFR Design Change Request (Minor 6点)
+**Timestamp**: 2026-04-29T10:08:00Z
+**User Input**: "Mn1: HaveIBeenPwned Fail-open と SECURITY-15 の表面的矛盾にトレードオフ表新設。Mn2: DLQ アラームに CloudWatch メトリクス名を列追加。Mn3: NFR Requirements PBT と NFR Design PBT の補完関係を注記。Mn4: i18n 初期ロード namespace の JSON サイズ概算追記。Mn5: バンドルサイズ概算の試算手法を1行添える。Mn6: Users テーブル SK=TOKEN# は Unit 5 用スキーマ予約と注記。"
+**AI Response**: 6点すべて修正。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Design - Change Request (Minor 6点)
+
+---
+
+## Unit 1 Foundation - NFR Design Fix (F1 + F2)
+**Timestamp**: 2026-04-29T10:09:00Z
+**User Input**: "F1: §1.1 マークダウン構造破損 — Mn1 トレードオフ表挿入により DLQ/グレースフルデグラデーション行が孤立。F2: §5.2 メトリクス一覧に HibpTimeoutCount が未定義。"
+**AI Response**: F1: §1.1 テーブルを復元（3行完結）し、トレードオフサブセクションをテーブル後方に移動。F2: §5.2 メトリクス一覧に HibpTimeoutCount（reason: timeout, network_error）を追加。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Design - Fix (F1 + F2)
+
+---
+
+## Unit 1 Foundation - NFR Design Approved
+**Timestamp**: 2026-04-29T10:10:00Z
+**User Input**: "ありがとうございます。問題ありませんので承認します。今日の作業はここまでにしておきたいと思います。"
+**AI Response**: NFR Design 承認。aidlc-state.md を更新。セッション終了。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - NFR Design Complete - Approved
+
+---
+
+## Session End
+**Timestamp**: 2026-04-29T10:11:00Z
+**User Input**: "今日の作業はここまでにしておきたいと思います。"
+**AI Response**: セッション終了。次回再開ポイント: Infrastructure Design - Unit 1 Foundation。
+**Context**: Session pause. CONSTRUCTION Phase - Unit 1 Foundation - Infrastructure Design 開始待ち
+
+---
