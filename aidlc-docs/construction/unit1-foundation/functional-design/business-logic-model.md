@@ -7,17 +7,18 @@
 ```
 1. ユーザーがメール＋パスワードを入力
 2. フロントエンドバリデーション（BR-01-01, BR-01-02）
-3. Cognito signUp API 呼び出し
-4. Cognito Pre Sign-up Lambda Trigger が発火（BL-08）
-   4a. ブロックリスト照合 → 合格 → 続行
-   4b. ブロックリスト照合 → 不合格 → エラー返却（拒否理由 + ガイダンス）
-5. Cognito が確認メール送信
-6. ユーザーがメール内リンクをクリック → confirmSignUp
-7. 自動ログイン → トークン取得
-8. User.nickname が未設定 → プロファイル設定画面に遷移
-9. プロファイル入力（ニックネーム, 言語, 経験レベル）
-10. POST /signup API → User レコード作成 + TasteProfile 初期化
-11. ホーム画面（タブナビゲーション）に遷移
+3. フロントエンドでブロックリスト照合（BL-08）
+   3a. 合格 → 続行
+   3b. 不合格 → エラー表示（拒否理由 + ガイダンス）、送信中止
+4. Cognito signUp API 呼び出し
+5. Cognito Pre Sign-up Lambda Trigger が発火（ソーシャルログイン自動確認のみ）
+6. Cognito が確認メール送信
+7. ユーザーがメール内リンクをクリック → confirmSignUp
+8. 自動ログイン → トークン取得
+9. User.nickname が未設定 → プロファイル設定画面に遷移
+10. プロファイル入力（ニックネーム, 言語, 経験レベル）
+11. POST /signup API → User レコード作成 + TasteProfile 初期化（トランザクション）
+12. ホーム画面（タブナビゲーション）に遷移
 ```
 
 ---
@@ -158,11 +159,14 @@ MFA無効化:
 
 ---
 
-## BL-08: Cognito Pre Sign-up Lambda Trigger（ブロックリスト照合）
+## BL-08: ブロックリスト照合（フロントエンド実施）
 
 ```
-トリガー: Cognito Pre Sign-up イベント
-入力: event.request.userAttributes (email), event.request.password
+AWS 仕様上、Cognito Pre Sign-up Trigger にはパスワードが渡されないため、
+ブロックリスト照合はフロントエンド（SignupPage.tsx）で実施する。
+
+実装箇所: frontend/src/features/auth/pages/SignupPage.tsx
+タイミング: サインアップフォーム送信前（Cognito signUp API 呼び出し前）
 
 1. パスワードを取得
 2. ブロックリスト照合（3段階）:
@@ -176,15 +180,14 @@ MFA無効化:
    c. コンテキスト固有チェック
       - ユーザーのメールアドレスのローカル部分との照合
       - メールドメインとの照合
-3a. すべて合格 → event.response.autoConfirmUser = false（通常フロー続行）
-3b. いずれか不合格 → 例外をスロー（Cognito がサインアップを拒否）
-    - エラーメッセージ: 拒否理由を含む（BR-01-08）
-    - 例: "このパスワードは漏洩リストに含まれています。より安全なパスワードを選択してください。"
+3a. すべて合格 → Cognito signUp API を呼び出し
+3b. いずれか不合格 → エラー表示（拒否理由 + ガイダンス）
 
 注意事項:
 - HaveIBeenPwned API 呼び出しはタイムアウト2秒。タイムアウト時はチェックをスキップ（可用性優先）
-- Lambda のコールドスタート対策: Provisioned Concurrency を検討
+- k-anonymity モデルのため、パスワード全体がネットワークに送信されることはない
 - パスワード自体はログに記録しない（SECURITY-03準拠）
+- Cognito Pre Sign-up Trigger はソーシャルログインの自動確認のみ担当
 ```
 
 

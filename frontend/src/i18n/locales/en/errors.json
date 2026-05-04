@@ -1,0 +1,10 @@
+{
+  "VALIDATION_ERROR": "There was a problem with your input.",
+  "AUTH_ERROR": "Authentication required. Please log in again.",
+  "FORBIDDEN": "Access denied.",
+  "NOT_FOUND": "The page you are looking for was not found.",
+  "RATE_LIMITED": "Too many requests. Please try again later.",
+  "INTERNAL_ERROR": "A server error occurred. Please try again later.",
+  "NETWORK_ERROR": "A network error occurred. Please check your connection.",
+  "UNKNOWN_ERROR": "An unexpected error occurred."
+}

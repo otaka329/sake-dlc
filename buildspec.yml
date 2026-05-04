@@ -1,0 +1,53 @@
+# AWS CodeBuild ビルド仕様
+# ⚠️ CodePipeline / CodeBuild モジュールは Unit 6 (Infrastructure) で作成
+# このファイルは手動ビルド確認用。CI/CD パイプライン統合は Unit 6 で実施。
+
+version: 0.2
+
+env:
+  variables:
+    NODE_VERSION: "22"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 22
+    commands:
+      - npm ci
+
+  pre_build:
+    commands:
+      - echo "=== Lint ==="
+      - npm run lint
+      - echo "=== TypeCheck ==="
+      - cd packages/shared-types && npm run typecheck && cd ../..
+      - cd backend && npm run typecheck && cd ..
+      - cd frontend && npm run typecheck && cd ..
+
+  build:
+    commands:
+      - echo "=== Backend Test ==="
+      - cd backend && npm run test && cd ..
+      - echo "=== Frontend Test ==="
+      - cd frontend && npm run test && cd ..
+      - echo "=== Backend Build ==="
+      - cd backend && npm run build && cd ..
+      - echo "=== Frontend Build ==="
+      - cd frontend && npm run build && cd ..
+
+  post_build:
+    commands:
+      - echo "ビルド完了"
+
+artifacts:
+  files:
+    - backend/dist/**/*
+    - frontend/dist/**/*
+  discard-paths: no
+
+cache:
+  paths:
+    - node_modules/**/*
+    - frontend/node_modules/**/*
+    - backend/node_modules/**/*
+    - packages/shared-types/node_modules/**/*

@@ -1,0 +1,38 @@
+{
+  "name": "@sdlc/frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sdlc/shared-types": "*",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-router": "7.1.1",
+    "react-i18next": "15.4.0",
+    "i18next": "24.2.2",
+    "i18next-browser-languagedetector": "8.0.4",
+    "ky": "1.7.4",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@testing-library/react": "16.1.0",
+    "@testing-library/jest-dom": "6.6.3",
+    "@types/react": "19.0.7",
+    "@types/react-dom": "19.0.3",
+    "@vitejs/plugin-react": "4.3.4",
+    "vite-plugin-pwa": "0.21.1",
+    "typescript": "5.7.3",
+    "vitest": "3.0.4",
+    "fast-check": "3.23.2",
+    "jsdom": "25.0.1"
+  }
+}

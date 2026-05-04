@@ -1,0 +1,35 @@
+{
+  "app": {
+    "name": "SDLC",
+    "fullName": "Sake Driven Life Cycle"
+  },
+  "nav": {
+    "plan": "Plan",
+    "build": "Build",
+    "test": "Test",
+    "deploy": "Deploy",
+    "monitor": "Monitor",
+    "more": "その他"
+  },
+  "actions": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "back": "戻る",
+    "next": "次へ",
+    "submit": "送信",
+    "loading": "読み込み中...",
+    "retry": "再試行"
+  },
+  "status": {
+    "offline": "オフラインです。一部の機能が制限されています。",
+    "online": "オンラインに復帰しました"
+  },
+  "placeholder": {
+    "title": "準備中",
+    "message": "この機能は今後のアップデートで追加されます。"
+  },
+  "language": {
+    "ja": "日本語",
+    "en": "English"
+  }
+}

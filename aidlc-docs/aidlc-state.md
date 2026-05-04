@@ -44,7 +44,7 @@
 - [x] NFR Requirements - Unit 1 Foundation
 - [x] NFR Design - Unit 1 Foundation
 - [x] Infrastructure Design - Unit 1 Foundation
-- [ ] Code Generation - EXECUTE
+- [x] Code Generation - Unit 1 Foundation
 - [ ] Build and Test - EXECUTE
 
 ### 🟡 OPERATIONS PHASE
@@ -52,6 +52,6 @@
 
 ## Current Status
 - **Lifecycle Phase**: CONSTRUCTION
-- **Current Stage**: Code Generation - Unit 1 Foundation
-- **Next Stage**: Build and Test
-- **Status**: Infrastructure Design 承認完了。Code Generation に進行。CSP unsafe-inline 除去/nonce 化判断は Code Generation で実施
+- **Current Stage**: Build and Test
+- **Next Stage**: Unit 2〜6 の Construction Phase（または Operations Phase）
+- **Status**: Code Generation 承認完了。次回は Build and Test から開始

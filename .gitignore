@@ -147,3 +147,20 @@ vite.config.ts.timestamp-*
 
 # Editor
 .vscode/
+
+# Terraform
+infra/**/.terraform/
+infra/**/*.tfstate
+infra/**/*.tfstate.backup
+infra/**/*.tfplan
+*.tfvars
+!*.tfvars.example
+
+# Lambda ビルド出力
+backend/dist/
+
+# フロントエンドビルド出力
+frontend/dist/
+
+# テストカバレッジ
+coverage/

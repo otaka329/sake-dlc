@@ -1,0 +1,2 @@
+# prod 環境設定（コピーして terraform.tfvars を作成）
+sns_alert_email = "prod-alerts@example.com"
