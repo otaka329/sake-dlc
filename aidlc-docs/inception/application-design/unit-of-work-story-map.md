@@ -34,6 +34,9 @@
 | US-25 | ホーム画面への追加 | Must | Unit 1 Foundation |
 | US-26 | オフライン対応 | Should | Unit 1 Foundation |
 | US-27 | プッシュ通知設定 | Should | Unit 5 External |
+| US-28 | 開示レイヤーの自動解放 | Must | Unit 4 Lifecycle |
+| US-29 | 開示レイヤーに応じた表示切替 | Must | Unit 1 Foundation |
+| US-30 | オンボーディングでの経験レベル選択 | Should | Unit 1 Foundation |
 
 ---
 
@@ -41,15 +44,15 @@
 
 | ユニット | Must | Should | Could | 合計 |
 |---|---|---|---|---|
-| Unit 1 Foundation | 4 | 2 | 0 | 6 |
+| Unit 1 Foundation | 5 | 3 | 0 | 8 |
 | Unit 2 AI Core | 4 | 3 | 0 | 7 |
 | Unit 3 Pairing & Discovery | 3 | 2 | 1 | 6 |
-| Unit 4 Lifecycle Tracking | 4 | 2 | 0 | 6 |
+| Unit 4 Lifecycle Tracking | 5 | 2 | 0 | 7 |
 | Unit 5 External Integration | 2 | 1 | 0 | 3 |
 | Unit 6 Infrastructure | 0 | 0 | 0 | 0 |
-| **合計** | **17** | **10** | **1** | **28** |
+| **合計** | **19** | **11** | **1** | **31** |
 
 ---
 
 ## 未割り当てストーリー確認
-全28ストーリーがユニットに割り当て済み。未割り当てなし。
+全31ストーリーがユニットに割り当て済み。未割り当てなし。

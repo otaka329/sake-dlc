@@ -7,7 +7,7 @@
 ### FE-01: AuthFeature（認証機能）
 - **責務**: ユーザー登録、ログイン、ソーシャルログイン、MFA（TOTP）、セッション管理
 - **インターフェース**: Cognito SDK連携、認証状態のContext提供
-- **関連ストーリー**: US-01, US-02, US-02B
+- **関連ストーリー**: US-01, US-02, US-02B, US-30
 
 ### FE-02: PlanFeature（計画機能）
 - **責務**: 体調・予定入力、料理入力（テキスト/画像）、SDLCサイクルのPlanステップUI
@@ -45,9 +45,9 @@
 - **関連ストーリー**: US-22, US-23, US-24
 
 ### FE-09: SharedComponents（共通コンポーネント）
-- **責務**: レイアウト、ナビゲーション、i18n切替、通知設定UI、PWA関連
+- **責務**: レイアウト、ナビゲーション、i18n切替、通知設定UI、PWA関連、開示レイヤー管理（DisclosureContext、レイヤー判定ロジック、解放通知UI）
 - **インターフェース**: 全Feature から利用される共通UI部品
-- **関連ストーリー**: US-03, US-25, US-26
+- **関連ストーリー**: US-03, US-25, US-26, US-28, US-29
 - **注記**: US-27（プッシュ通知設定）の設定UIはFE-09が提供するが、ストーリー所有はUnit 5（BE-08 NotificationHandlers）。FE-09は設定画面のUI部品のみ担当
 
 ---
@@ -65,6 +65,8 @@
   - `post-mfa-verify` — MFA（TOTP）検証・有効化
   - `delete-mfa` — MFA無効化
   - `post-recovery-codes` — リカバリーコード発行
+  - `put-disclosure-level` — 開示レイヤー更新（手動全解放、カテゴリ別解放）
+  - `cognito-daily-backup` — Cognito ユーザー属性の日次バックアップ（EventBridge スケジュールトリガー → S3 エクスポート）
 
 ### Cognito × NIST SP 800-63B §3.1.1 整合性メモ
 | NIST要件 | Cognito対応 | 実装方針 |
@@ -145,7 +147,7 @@ DynamoDB NotificationSettings テーブルに PushSubscription（endpoint, keys.
 - **利用元**: BE-02, BE-03, BE-05, BE-06
 
 ### CM-02: SakenowaClient（さけのわクライアント）
-- **責務**: さけのわAPIへのアクセスとDynamoDBキャッシュの読み書き
+- **責務**: さけのわAPIへのアクセスとDynamoDBキャッシュ（SakenowaCache テーブル）の読み書き
 - **機能**: TTLベースキャッシュ（24h）、キャッシュミス時のAPI呼び出し
 - **利用元**: BE-02, BE-03, BE-05, BE-06
 

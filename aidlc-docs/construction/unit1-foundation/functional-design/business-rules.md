@@ -73,7 +73,7 @@
 | BR-03-01 | ニックネームは2〜20文字であること | 文字数チェック |
 | BR-03-02 | ニックネームに使用可能な文字: ひらがな、カタカナ、漢字、英数字、アンダースコア | 正規表現バリデーション |
 | BR-03-03 | 言語設定は ja または en であること | enum バリデーション |
-| BR-03-04 | 日本酒経験レベルは beginner, intermediate, advanced のいずれか | enum バリデーション |
+| BR-03-04 | 日本酒経験レベルは beginner, intermediate, advanced のいずれか、または未指定（スキップ可） | enum バリデーション。未指定時は beginner 扱い |
 | BR-03-05 | プロファイル設定完了後、TasteProfile を初期値で作成 | 6軸すべて0.5（中央値）で初期化 |
 
 ---
@@ -107,3 +107,44 @@
 | BR-06-02 | トークン有効期限切れ時は自動リフレッシュ | refreshToken による自動更新 |
 | BR-06-03 | リフレッシュトークンも期限切れの場合はログイン画面にリダイレクト | 401レスポンス時の処理 |
 | BR-06-04 | ログアウト時はすべてのトークンを無効化 | Cognito globalSignOut + ローカルストレージクリア |
+
+
+---
+
+## BR-07: Progressive Disclosure（3段階開示レイヤー）
+
+| ルールID | ルール | 検証条件 |
+|---|---|---|
+| BR-07-01 | 新規ユーザーのデフォルト開示レイヤーは Layer 1 であること | disclosureLevel = 1 |
+| BR-07-02 | sakeExperience が beginner または未設定の場合、Layer 1 スタート | disclosureLevel = 1, unlockedCategories = [] |
+| BR-07-03 | sakeExperience が intermediate の場合、Layer 2 の一部を即解放 | disclosureLevel = 1, unlockedCategories に基本カテゴリ（type, region）を含む |
+| BR-07-04 | sakeExperience が advanced の場合、Layer 3 まで全解放 | disclosureLevel = 3, unlockedCategories = [] (全解放のため個別管理不要) |
+| BR-07-05 | 特定カテゴリの「もっと詳しく」タップで、そのカテゴリの Layer 2 を個別解放。対象カテゴリは Layer 2 項目のみ（type, region, temperature） | unlockedCategories に該当カテゴリを追加。vessel・seasonal は Layer 3 項目のため個別解放対象外 |
+| BR-07-06 | 飲酒ログ累計5件到達で Layer 2 全体を解放 | disclosureLevel = 2 に更新 |
+| BR-07-07 | 飲酒ログ累計20件到達で Layer 3 を解放 | disclosureLevel = 3 に更新 |
+| BR-07-08 | Settings から手動で「詳細モードへ」を選択すると即全解放 | disclosureLevel = 3 に更新 |
+| BR-07-09 | 開示レイヤーの解放は不可逆であること | disclosureLevel は増加のみ（3→2 や 2→1 への変更不可） |
+| BR-07-10 | Layer 1 では味の表現を甘辛×濃淡の2軸のみで表示すること | 6軸 TasteProfile を内部で保持しつつ、表示は2軸にマッピング |
+| BR-07-11 | Layer 2 では純米/吟醸タイプ、産地、温め/冷やし好みを追加表示すること | Layer 1 の情報 + カテゴリ情報 |
+| BR-07-12 | Layer 3 では精米歩合、酵母、日本酒度、酒器提案、季節酒情報を追加表示すること | Layer 2 の情報 + 専門情報 |
+
+### 解放トリガー一覧
+
+| シグナル | 効果 | 実装箇所 |
+|---|---|---|
+| 特定カテゴリの「詳細」タップ | そのカテゴリの Layer 2 を解放 | FE: PUT /disclosure-level API 呼び出し |
+| 飲酒ログ5件到達 | Layer 2 全体を解放 | BE: POST /drinking-log のレスポンスで通知（Unit 4 実装） |
+| 飲酒ログ20件到達 | Layer 3 を解放 | BE: POST /drinking-log のレスポンスで通知（Unit 4 実装） |
+| Settings から手動で「詳細モードへ」 | 即全解放 | FE: PUT /disclosure-level API 呼び出し |
+| オンボーディング sakeExperience 選択 | 初期レイヤー設定 | BE: POST /signup で disclosureLevel を算出 |
+
+### 2軸マッピング（Layer 1 用）
+
+6軸 TasteProfile → 2軸への変換:
+- **甘辛軸**: (f1_hanayaka + f2_houjun - f5_dry - f6_keikai) / 4 + 0.5 → 0.0(辛い) 〜 1.0(甘い)
+- **濃淡軸**: (f2_houjun + f3_juukou - f4_odayaka - f6_keikai) / 4 + 0.5 → 0.0(さっぱり) 〜 1.0(濃厚)
+
+### 実装メモ
+- disclosureLevel と unlockedCategories は Users テーブル（SK: PROFILE）に保存
+- ログ件数ベースのトリガーは Unit 4 (DrinkingLogService) で実装。Unit 1 では API エンドポイント（PUT /disclosure-level）とドメインロジックのみ定義
+- AI プロンプトテンプレートに disclosureLevel パラメータを含め、Layer に応じた出力フォーマットを切り替え（Unit 2 で実装）

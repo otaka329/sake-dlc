@@ -76,5 +76,6 @@
 | Sake Discovery | ★★ | ★ | ★★★ | ★★ |
 | Next-Day Optimizer | ★ | ★★★ | ★ | ★★ |
 | Personal Taste Graph | ★★ | ★★ | ★ | ★★★ |
+| Progressive Disclosure | ★★★ | ★ | ★★★ | ★（即全解放） |
 
 ★★★ = 主要ユーザー、★★ = 利用する、★ = 補助的に利用

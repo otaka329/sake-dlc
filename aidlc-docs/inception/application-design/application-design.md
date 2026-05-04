@@ -24,8 +24,8 @@
 
 ### バックエンド
 - API Gateway (REST) + Cognito JWT Authorizer
-- Lambda関数 29個（エンドポイント単位、Node.js/TypeScript）
-- DynamoDB 6テーブル（Users, TasteProfiles, DrinkingLogs, SakenowaCache, UserTokens, NotificationSettings）
+- Lambda関数 30個（エンドポイント単位、Node.js/TypeScript）+ cognito-daily-backup = 31個
+- DynamoDB 5テーブル（Users, TasteProfiles, DrinkingLogs, SakenowaCache, AppData）
 - AIGateway（Bedrock Claude呼び出し一元管理 + S3プロンプトテンプレート）
 - SakenowaClient（さけのわAPI連携 + TTL 24hキャッシュ）
 
@@ -43,7 +43,7 @@
 ## 3. コンポーネント一覧
 
 ### フロントエンド（9 Feature）
-- FE-01: AuthFeature — 認証（US-01, US-02）
+- FE-01: AuthFeature — 認証（US-01, US-02, US-02B, US-30）
 - FE-02: PlanFeature — 計画（US-04〜US-07）
 - FE-03: BuildFeature — 構成・推薦（US-08〜US-11）
 - FE-04: TestFeature — ペアリング（US-12, US-13）
@@ -51,10 +51,10 @@
 - FE-06: MonitorFeature — 観測（US-17, US-18）
 - FE-07: OptimizeFeature — 最適化（US-19〜US-21）
 - FE-08: DiscoveryFeature — 発見（US-22〜US-24）
-- FE-09: SharedComponents — 共通（US-03, US-25〜US-27）
+- FE-09: SharedComponents — 共通（US-03, US-25, US-26, US-28, US-29）
 
 ### バックエンド（9 Handler群 + 4 共通コンポーネント）
-- BE-01〜BE-09: Lambda Handler群（29 Lambda関数）
+- BE-01〜BE-09: Lambda Handler群（30 Lambda関数）
 - CM-01: AIGateway（Bedrock + S3テンプレート）
 - CM-02: SakenowaClient（さけのわAPI + DynamoDBキャッシュ）
 - CM-03: AuthMiddleware（Cognito JWT検証）

@@ -98,21 +98,26 @@ Service Worker キャッシュ戦略:
 ## BL-06: POST /signup ハンドラーロジック
 
 ```
-入力: { nickname, locale, sakeExperience }
+入力: { nickname, locale, sakeExperience? }
 認証: Cognito JWT から userId を抽出
 
 1. 入力バリデーション（BR-03-01〜BR-03-04）
-2. DynamoDB Users テーブルに User レコード作成
-   - userId, email（JWT から）, nickname, locale, sakeExperience
+2. 開示レイヤー初期値の算出（BR-07-01〜04）:
+   a. sakeExperience 未指定 or "beginner" → disclosureLevel = 1, unlockedCategories = []
+   b. "intermediate" → disclosureLevel = 1, unlockedCategories = ["type", "region"]
+   c. "advanced" → disclosureLevel = 3, unlockedCategories = []
+3. DynamoDB Users テーブルに User レコード作成
+   - userId, email（JWT から）, nickname, locale, sakeExperience (or null)
    - authProvider（JWT の identities から判定）
+   - disclosureLevel, unlockedCategories
    - googleCalendarLinked: false
    - notificationEnabled: true
    - createdAt, updatedAt: 現在時刻
-3. DynamoDB TasteProfiles テーブルに初期プロファイル作成
+4. DynamoDB TasteProfiles テーブルに初期プロファイル作成
    - userId
    - f1〜f6: すべて 0.5（中央値）
    - updatedAt: 現在時刻
-4. 成功レスポンス: 201 Created + User オブジェクト
+5. 成功レスポンス: 201 Created + User オブジェクト（disclosureLevel 含む）
 ```
 
 ---
@@ -180,4 +185,37 @@ MFA無効化:
 - HaveIBeenPwned API 呼び出しはタイムアウト2秒。タイムアウト時はチェックをスキップ（可用性優先）
 - Lambda のコールドスタート対策: Provisioned Concurrency を検討
 - パスワード自体はログに記録しない（SECURITY-03準拠）
+```
+
+
+---
+
+## BL-09: 開示レイヤー初期設定フロー
+
+→ BL-06（POST /signup ハンドラーロジック）のステップ2 に統合済み。開示レイヤーの初期値算出ロジックは BL-06 を参照。
+
+---
+
+## BL-10: 開示レイヤー更新フロー（PUT /disclosure-level）
+
+```
+入力: { action: "unlock_category" | "unlock_all", category?: string }
+認証: Cognito JWT から userId を抽出
+
+action = "unlock_category" の場合:
+1. category が有効な Layer 2 カテゴリ名か検証（type, region, temperature）。vessel・seasonal は Layer 3 項目のため unlock_category 対象外
+2. Users テーブルから現在の unlockedCategories を取得
+3. category が未解放の場合のみ追加（冪等性）
+4. DynamoDB UpdateItem で unlockedCategories を更新
+5. 成功レスポンス: 200 OK + 更新後の disclosureLevel, unlockedCategories
+
+action = "unlock_all" の場合:
+1. disclosureLevel を 3 に更新
+2. unlockedCategories をクリア（全解放のため個別管理不要）
+3. DynamoDB UpdateItem で disclosureLevel, unlockedCategories を更新
+4. 成功レスポンス: 200 OK + 更新後の disclosureLevel
+
+不変条件:
+- disclosureLevel は増加のみ（BR-07-09）
+- 既に disclosureLevel = 3 の場合は何もしない（冪等）
 ```

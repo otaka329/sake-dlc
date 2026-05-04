@@ -17,7 +17,7 @@
 | BEコンポーネント | BE-01 (AuthHandlers), CM-01 (AIGateway インターフェース定義＋スタブ), CM-02 (SakenowaClient インターフェース定義＋スタブ), CM-03 (AuthMiddleware), CM-04 (Logger) |
 | インフラ | Terraform基盤（API Gateway, Cognito, DynamoDB 全6テーブルスキーマ定義, S3, CloudFront, Lambda共通設定） |
 | DynamoDBテーブル | 全6テーブルの Terraform スキーマ定義のみ（Users, TasteProfiles, DrinkingLogs, SakenowaCache, UserTokens, NotificationSettings）。データアクセスロジック（CRUD実装）は各オーナーユニットが担当 |
-| 関連ストーリー | US-01, US-02, US-02B, US-03, US-25, US-26 |
+| 関連ストーリー | US-01, US-02, US-02B, US-03, US-25, US-26, US-29, US-30 |
 
 ### コード構成
 ```
@@ -101,7 +101,7 @@
 | サービス | SVC-04 (DrinkingLogService), SVC-05 (TasteGraphService) |
 | インフラ | Lambda関数群 |
 | DynamoDBテーブル | DrinkingLogs, TasteProfiles（読み書き） |
-| 関連ストーリー | US-14, US-15, US-17, US-19, US-20, US-21 |
+| 関連ストーリー | US-14, US-15, US-17, US-19, US-20, US-21, US-28 |
 
 ---
 

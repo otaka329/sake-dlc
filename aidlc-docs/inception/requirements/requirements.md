@@ -98,6 +98,17 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのサイクル（Pl
 - **Monitor**: 睡眠・翌朝の状態・予定への影響を記録
 - **Optimize**: Taste Graphに反映、次サイクルへ
 
+### FR-09: Progressive Disclosure（3段階開示レイヤー）
+- **概要**: ユーザーの習熟度に応じて情報の詳細度を段階的に開示する仕組み
+- **Layer 1 — 感覚・感情軸（デフォルト）**: 技術用語ゼロ。気分・料理ジャンル・ビジュアル・2軸（甘辛×濃淡）のみ
+- **Layer 2 — カテゴリ・産地軸**: 酒米産地、純米/吟醸タイプ（フレンドリーな説明付き）、温め/冷やし好み
+- **Layer 3 — 専門軸**: 精米歩合・酵母・日本酒度、酒器提案、季節酒・限定酒
+- **sakeExperience 連携**: beginner → Layer 1 スタート、intermediate → Layer 2 一部即解放、advanced → Layer 3 全解放。入力は任意（スキップ可、デフォルト Layer 1）
+- **解放トリガー**: 特定カテゴリの「詳細」タップ → そのカテゴリの Layer 2 解放、ログ5件 → Layer 2 全体解放、ログ20件 → Layer 3 解放、Settings から手動で即全解放
+- **AI統合**: プロンプトテンプレートに disclosureLevel パラメータを含め、Layer に応じた出力フォーマット（感覚的 vs 専門的）を切り替え
+- **Taste Graph 連携**: 内部は6軸で計算。Layer 1 ユーザーには2軸（甘辛×濃淡）にマッピングして表示。Layer 2+ で6軸レーダーチャートを表示
+- **影響範囲**: FR-01, FR-03, FR-04, FR-06, FR-08 の表示粒度に横断的に影響
+
 ---
 
 ## 3. 非機能要件
@@ -203,7 +214,7 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのサイクル（Pl
 ## 5. データモデル概要
 
 ### ユーザー (Users)
-- userId (PK), email, nickname, locale (ja/en), sakeExperience, authProvider, mfaEnabled, mfaSecret (暗号化), recoveryCodes (ハッシュ化), googleCalendarLinked, notificationEnabled, createdAt, updatedAt
+- userId (PK), email, nickname, locale (ja/en), sakeExperience, authProvider, mfaEnabled, mfaSecret (暗号化), recoveryCodes (ハッシュ化), googleCalendarLinked, notificationEnabled, disclosureLevel (1/2/3, デフォルト:1), unlockedCategories (string[], Layer 2 個別解放済みカテゴリ), createdAt, updatedAt
 
 ### 味覚プロファイル (TasteProfiles)
 - userId (PK), f1_hanayaka, f2_houjun, f3_juukou, f4_odayaka, f5_dry, f6_keikai, updatedAt
@@ -236,10 +247,10 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのサイクル（Pl
 ### ストーリー数サマリー（正式な集計は `aidlc-docs/inception/user-stories/stories.md` を参照）
 | 優先度 | 件数 |
 |---|---|
-| Must | 17 |
-| Should | 10 |
+| Must | 19 |
+| Should | 11 |
 | Could | 1 |
-| 合計 | 28 |
+| 合計 | 31 |
 
 ### ドキュメント相互参照
 | 成果物 | パス | 同期対象 |
@@ -247,10 +258,10 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのサイクル（Pl
 | 要件定義書 | `aidlc-docs/inception/requirements/requirements.md` | FR/NFR定義、データモデル、技術スタック |
 | ユーザーストーリー | `aidlc-docs/inception/user-stories/stories.md` | ストーリー一覧、優先度、受け入れ基準 |
 | ペルソナ | `aidlc-docs/inception/user-stories/personas.md` | ペルソナ定義、機能マトリクス |
-| コンポーネント定義 | `aidlc-docs/inception/application-design/components.md` | コンポーネント一覧、Lambda関数数（29） |
+| コンポーネント定義 | `aidlc-docs/inception/application-design/components.md` | コンポーネント一覧、Lambda関数数（31） |
 | ユニット定義 | `aidlc-docs/inception/application-design/unit-of-work.md` | ユニット分解、関連ストーリー |
-| ストーリーマッピング | `aidlc-docs/inception/application-design/unit-of-work-story-map.md` | ストーリー×ユニット割り当て（28件） |
-| 統合設計 | `aidlc-docs/inception/application-design/application-design.md` | Lambda数（29）、DynamoDBテーブル数（6） |
+| ストーリーマッピング | `aidlc-docs/inception/application-design/unit-of-work-story-map.md` | ストーリー×ユニット割り当て（31件） |
+| 統合設計 | `aidlc-docs/inception/application-design/application-design.md` | Lambda数（31）、DynamoDBテーブル数（5） |
 
 ⚠️ ストーリーの追加・削除時は上記すべてのドキュメントを同期更新すること。
 

@@ -102,9 +102,10 @@
 
 ### OnboardingPage
 - **責務**: 初期プロファイル設定
-- **フォームフィールド**: nickname (string), locale (select: ja/en), sakeExperience (select: beginner/intermediate/advanced)
-- **バリデーション**: BR-03-01〜BR-03-04
+- **フォームフィールド**: nickname (string), locale (select: ja/en), sakeExperience (select: beginner/intermediate/advanced/skip, 任意)
+- **バリデーション**: BR-03-01〜BR-03-04（sakeExperience は任意、未選択時は beginner 扱い）
 - **アクション**: POST /signup API
+- **開示レイヤー**: sakeExperience 選択に応じて初期 disclosureLevel を設定（BR-07-01〜04）
 - **遷移先**: 成功 → `/`
 
 ---
@@ -142,6 +143,25 @@ type AppAction =
   | { type: 'SET_CYCLE_STEP'; payload: string };
 ```
 
+### DisclosureContext
+```typescript
+interface DisclosureState {
+  disclosureLevel: 1 | 2 | 3;
+  unlockedCategories: string[];
+}
+
+type DisclosureAction =
+  | { type: 'SET_DISCLOSURE'; payload: { disclosureLevel: number; unlockedCategories: string[] } }
+  | { type: 'UNLOCK_CATEGORY'; payload: string }
+  | { type: 'UNLOCK_ALL' };
+
+// ヘルパー関数
+// isLayerVisible(requiredLayer: number): boolean
+//   → disclosureLevel >= requiredLayer
+// isCategoryUnlocked(category: string): boolean
+//   → disclosureLevel >= 2 || unlockedCategories.includes(category)
+```
+
 ---
 
 ## API統合ポイント
@@ -158,3 +178,4 @@ type AppAction =
 | MfaSetupSection | Cognito associateSoftwareToken | SDK | TOTPシークレット取得 |
 | MfaSetupSection | Cognito verifySoftwareToken | SDK | TOTP検証・有効化 |
 | MfaSetupSection | POST /mfa/recovery-codes | REST | リカバリーコード発行 |
+| SettingsPage | PUT /disclosure-level | REST | 開示レイヤー更新（手動全解放、カテゴリ別解放） |

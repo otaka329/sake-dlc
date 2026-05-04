@@ -10,8 +10,10 @@
 | email | string | Yes | メールアドレス |
 | nickname | string | Yes | 表示名（2〜20文字） |
 | locale | enum (ja, en) | Yes | 表示言語（デフォルト: ブラウザ言語から自動判定） |
-| sakeExperience | enum (beginner, intermediate, advanced) | Yes | 日本酒経験レベル |
+| sakeExperience | enum (beginner, intermediate, advanced) | No | 日本酒経験レベル（任意。未設定時は beginner 扱い） |
 | authProvider | enum (email, google, apple) | Yes | 認証プロバイダー |
+| disclosureLevel | number (1, 2, 3) | Yes | 開示レイヤー（デフォルト: 1）。sakeExperience から初期値を算出 |
+| unlockedCategories | string[] | Yes | Layer 2 個別解放済みカテゴリ（デフォルト: []）。「もっと詳しく」タップで追加 |
 | googleCalendarLinked | boolean | Yes | Google Calendar連携状態（デフォルト: false） |
 | notificationEnabled | boolean | Yes | プッシュ通知有効（デフォルト: true） |
 | mfaEnabled | boolean | Yes | MFA有効（デフォルト: false） |

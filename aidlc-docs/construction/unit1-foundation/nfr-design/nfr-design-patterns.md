@@ -583,3 +583,5 @@ NFR 設計パターンから特定されたテスト可能プロパティ:
 | レート制限カウンター | Idempotence | 同一ウィンドウ内の重複チェックは結果不変 | PBT-04 |
 | PII マスク | Invariant | マスク後の出力に email/password の平文が含まれない | PBT-03 |
 | DynamoDB キー生成 | Round-trip | PK/SK からエンティティ種別とIDを復元可能 | PBT-02 |
+| 開示レイヤー更新 | Invariant | disclosureLevel は単調増加（1→2→3 のみ、逆行不可） | PBT-03 |
+| 2軸マッピング | Invariant | 6軸入力 [0,1] に対して2軸出力が常に [0,1] 範囲内 | PBT-03 |

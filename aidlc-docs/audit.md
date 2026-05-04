@@ -511,3 +511,74 @@
 **Context**: Session pause. CONSTRUCTION Phase - Unit 1 Foundation - Infrastructure Design 開始待ち
 
 ---
+
+## Session Resume
+**Timestamp**: 2026-04-30T10:00:00Z
+**User Input**: "作業を再開したいと思いますが、機能面で１つ提案があります。下記内容を実現可能かまずは確認してください。--- 提案: 3段階の開示レイヤー Layer 1（感覚・感情軸、デフォルト）、Layer 2（カテゴリ・産地軸、興味シグナルで解放）、Layer 3（専門軸、累積インタラクションで解放）。sakeExperience を初期開示レイヤーのジャンプ先として使用。解放トリガー: 詳細タップ→カテゴリ別Layer2解放、ログ5件→Layer2全体解放、ログ20件→Layer3解放、Settings手動→即全解放。"
+**AI Response**: 技術的実現可能性を分析中。
+**Context**: Session resume - 機能提案の実現可能性評価
+
+---
+
+## Progressive Disclosure (3段階開示レイヤー) — Inception 成果物遡及反映
+**Timestamp**: 2026-04-30T10:01:00Z
+**User Input**: "A でお願いします。"（方針A: Inception 成果物に遡って反映してから Construction を続行）
+**AI Response**: 3段階開示レイヤー（FR-09）を全 Inception 成果物に遡及反映。
+
+### 更新ファイル一覧:
+1. **requirements.md**: FR-09 追加、User データモデルに disclosureLevel/unlockedCategories 追加、§7 ストーリー数 28→31、Lambda数 29→31
+2. **stories.md**: Epic 8B 新設、US-28（自動解放, Must）、US-29（表示切替, Must）、US-30（オンボーディング経験レベル, Should）追加。合計 28→31
+3. **personas.md**: ペルソナ×機能マトリクスに Progressive Disclosure 行追加
+4. **components.md**: FE-01 に US-30 追加、FE-09 に開示レイヤー管理責務・US-28/29 追加、BE-01 に put-disclosure-level Lambda 追加
+5. **application-design.md**: Lambda 数 29→31 に更新
+6. **unit-of-work-story-map.md**: US-28（Unit 4）、US-29（Unit 1）、US-30（Unit 1）追加。サマリー更新
+7. **unit-of-work.md**: Unit 1 関連ストーリーに US-29/30 追加、Unit 4 に US-28 追加
+8. **domain-entities.md**: User に disclosureLevel, unlockedCategories フィールド追加。sakeExperience を任意に変更
+9. **business-rules.md**: BR-07（12ルール）追加。解放トリガー一覧、2軸マッピング式を定義。BR-03-04 を任意入力に変更
+10. **business-logic-model.md**: BL-06 拡張（disclosureLevel 初期設定）、BL-09（初期設定フロー）、BL-10（更新フロー）追加
+11. **frontend-components.md**: DisclosureContext 追加、OnboardingPage の sakeExperience 任意化、API 統合ポイントに PUT /disclosure-level 追加
+12. **nfr-design/logical-components.md**: IAM 権限に put-disclosure-level 追加、Zod スキーマに updateDisclosureLevelSchema 追加
+13. **nfr-design/nfr-design-patterns.md**: PBT 対象に開示レイヤー更新（Invariant）、2軸マッピング（Invariant）追加
+14. **nfr-requirements.md**: PBT 対象に開示レイヤー初期設定、2軸マッピング追加
+
+**Context**: CONSTRUCTION Phase - Inception 成果物遡及反映完了。Infrastructure Design に進行可能。
+
+---
+
+## Progressive Disclosure — レビュー指摘修正（6点）
+**Timestamp**: 2026-04-30T10:02:00Z
+**User Input**: "レビュー結果: 承認（要軽微修正4点 + 設計確認2点）。(1) story-map 28→31、(2) application-design Lambda 29→30、(3) FE-09 ストーリー更新、(4) FE-01 ストーリー更新、(5) BL-09 重複解消、(6) unlock_category 有効カテゴリから vessel/seasonal 除外。"
+**AI Response**: 6点すべて修正。(1) story-map「全31ストーリー」に修正。(2) Lambda Handler群 30に修正。(3) FE-09 US-28/29追加。(4) FE-01 US-02B/30追加。(5) BL-09をBL-06参照に簡素化。(6) unlock_category有効カテゴリをtype/region/temperatureの3つに限定（BR-07-05、BL-10、Zodスキーマを整合更新）。
+**Context**: CONSTRUCTION Phase - Progressive Disclosure レビュー指摘修正完了
+
+---
+
+## Progressive Disclosure — Inception 遡及反映 Approved
+**Timestamp**: 2026-04-30T10:03:00Z
+**User Input**: "ありがとうございます。Inception 遡及反映内容を承認します。"
+**AI Response**: 承認。Infrastructure Design - Unit 1 Foundation に進行。
+**Context**: Progressive Disclosure Inception 遡及反映完了・承認。CONSTRUCTION Phase 続行。
+
+---
+
+## Unit 1 Foundation - Infrastructure Design Plan & Questions Created
+**Timestamp**: 2026-04-30T10:04:00Z
+**AI Response**: Infrastructure Design計画と5問の質問を作成。質問内容: (1) Terraform状態管理バックエンド, (2) 環境分離方式, (3) カスタムドメイン方針, (4) CI/CDツール選定, (5) Cognito Advanced Security料金方針。持ち越しリマインダー4点を計画に明記。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - Infrastructure Design Steps 1-4
+
+---
+
+## Unit 1 Foundation - Infrastructure Design Answers
+**Timestamp**: 2026-04-30T10:05:00Z
+**User Input**: ファイルに直接記入。Q1: A（S3+DynamoDBロック）, Q2: B（ディレクトリ分離）, Q3: B（初期デフォルトドメイン）, Q4: B（CodePipeline+CodeBuild）, Q5: A（Advanced Security有効化）
+**AI Response**: 回答分析完了。矛盾・曖昧点なし。成果物生成に進行。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - Infrastructure Design Step 5
+
+---
+
+## Unit 1 Foundation - Infrastructure Design Complete
+**Timestamp**: 2026-04-30T10:06:00Z
+**AI Response**: Infrastructure Design成果物を生成。infrastructure-design.md（8セクション: Cognito、API Gateway、DynamoDB 5テーブル、S3+CloudFront、Lambda基盤、監視、環境変数・シークレット、Terraformモジュール構成）。deployment-architecture.md（5セクション: 環境構成dev/prod、Terraformバックエンド S3+DynamoDB、CI/CD CodePipeline+CodeBuild、デプロイ手順、セキュリティ考慮事項）。Inception正本同期完了: application-design.md テーブル数6→5、components.md CM-02にSakenowaCache明示、BE-01にcognito-daily-backup追加、requirements.md §7テーブル数5。Gateway Response 7種をapi-gatewayモジュールで具体化。SECURITY-01〜15準拠検証済み。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - Infrastructure Design Step 7
+
+---

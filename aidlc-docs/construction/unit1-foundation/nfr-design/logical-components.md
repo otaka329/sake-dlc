@@ -423,6 +423,7 @@ API 呼び出し (ky)
 | signup-handler | Users: PutItem, TasteProfiles: PutItem | — |
 | get-profile | Users: GetItem | — |
 | update-profile | Users: UpdateItem | — |
+| put-disclosure-level | Users: UpdateItem | — |
 | cognito-pre-signup-trigger | — | Secrets Manager: GetSecretValue（ブロックリスト設定） |
 | mfa-recovery-codes | Users: UpdateItem | KMS: Encrypt（リカバリーコードハッシュ） |
 | cognito-daily-backup | — | Cognito: ListUsers, S3: PutObject |
@@ -436,9 +437,10 @@ API 呼び出し (ky)
 
 | スキーマ | 用途 | バリデーションルール |
 |---|---|---|
-| signupRequestSchema | POST /signup | nickname: 2-20文字（BR-03-01, 02）, locale: ja/en, sakeExperience: enum |
+| signupRequestSchema | POST /signup | nickname: 2-20文字（BR-03-01, 02）, locale: ja/en, sakeExperience?: enum（任意） |
 | updateProfileSchema | PUT /profile | nickname?, locale?, sakeExperience?（部分更新） |
-| userResponseSchema | API レスポンス | User エンティティの出力型 |
+| updateDisclosureLevelSchema | PUT /disclosure-level | action: "unlock_category" / "unlock_all", category?: enum(type, region, temperature)。Layer 2 カテゴリのみ |
+| userResponseSchema | API レスポンス | User エンティティの出力型（disclosureLevel, unlockedCategories 含む） |
 | errorResponseSchema | エラーレスポンス | code: enum, message: string, details?: array |
 | mfaRecoveryCodesSchema | POST /mfa/recovery-codes レスポンス | codes: string[10] |
 

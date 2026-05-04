@@ -200,6 +200,8 @@ WCAG 2.1 AA 準拠を目標とする。
 | 言語切替 | Round-trip（ja→en→ja で元に戻る） | PBT-02 |
 | JWT トークンパース | Round-trip（エンコード→デコード = 元データ） | PBT-02 |
 | TasteProfile 初期化 | Invariant（全6軸が 0.5） | PBT-03 |
+| 開示レイヤー初期設定 | Invariant（sakeExperience → disclosureLevel マッピングが BR-07-01〜04 に準拠） | PBT-03 |
+| 2軸マッピング | Invariant（6軸 [0,1] → 2軸 [0,1] の範囲保証） | PBT-03 |
 
 ### テストカバレッジ目標
 | 種別 | 目標 |
