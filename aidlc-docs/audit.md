@@ -582,3 +582,27 @@
 **Context**: CONSTRUCTION Phase - Unit 1 Foundation - Infrastructure Design Step 7
 
 ---
+
+## Unit 1 Foundation - Infrastructure Design Change Request (4点修正)
+**Timestamp**: 2026-04-30T10:07:00Z
+**User Input**: "1. SnapStart は Node.js 未対応のため削除/置換。2. put-profile の名称不一致を統一。3. CloudWatch ログ保持期間の dev/prod 注釈追加。4. deployment-architecture.md §5.3 に SECURITY-04/08 追加。"
+**AI Response**: 4点すべて修正。(1) SnapStart を N/A に変更、Node.js 向け代替策（esbuild+Layer+遅延import）を明記。nfr-requirements.md、nfr-design-patterns.md、logical-components.md も整合更新。(2) update-profile → put-profile に統一（§2.5、§5.4、§5.2 IAM、logical-components.md IAM）。(3) ロググループ保持を「dev:30日、prod:180日」に変更、SECURITY-14 は prod 要件と注釈。(4) SECURITY-04（Response Headers Policy）、SECURITY-08（Cognito Authorizer + CORS）を追加。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - Infrastructure Design - Change Request
+
+---
+
+## Unit 1 Foundation - Infrastructure Design Change Request (S3 ログライフサイクル)
+**Timestamp**: 2026-04-30T10:08:00Z
+**User Input**: "S3へのログ保存について、30日経過後はストレージクラスを変更したい。"
+**AI Response**: S3 ライフサイクルポリシーを追加。Standard(0-30日)→Standard-IA(31-90日)→Glacier Instant Retrieval(91-180日)→削除(181日〜)。dev は 30日で削除（遷移なし）。Terraform 設定パターン、コスト概算、dev/prod 差異の注記を含む。deployment-architecture.md §5.3 SECURITY-14 にライフサイクル記述追加。Terraform モジュール構成にログバケット明記。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - Infrastructure Design - Change Request (S3 ライフサイクル)
+
+---
+
+## Unit 1 Foundation - Infrastructure Design Approved
+**Timestamp**: 2026-04-30T10:09:00Z
+**User Input**: "問題ありません。承認します。"
+**AI Response**: Infrastructure Design 承認。aidlc-state.md を更新し、Code Generation に進行。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - Infrastructure Design Complete - Approved
+
+---

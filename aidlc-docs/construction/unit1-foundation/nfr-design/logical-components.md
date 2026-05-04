@@ -378,7 +378,6 @@ API 呼び出し (ky)
                  | Lambda           |
                  | - Powertools     |
                  | - Zod            |
-                 | - SnapStart      |
                  +------------------+
                       |
           +-----------+-----------+
@@ -413,7 +412,7 @@ API 呼び出し (ky)
 | api-gateway | REST API, Cognito Authorizer, ステージ, 2層スロットリング, アクセスログ, CORS | — |
 | dynamodb | 5テーブル（Users, TasteProfiles, DrinkingLogs, SakenowaCache, AppData）、GSI、暗号化、PITR、TTL | 6→5テーブルに統合（UserTokens→Users、NotificationSettings→AppData。SakenowaCache は独立維持） |
 | s3-cloudfront | SPA バケット, CloudFront Distribution, OAC, Response Headers Policy | — |
-| lambda-base | 共通 Lambda Layer (Powertools, Zod), IAM ロール, CloudWatch ロググループ (180日), SnapStart 設定 | — |
+| lambda-base | 共通 Lambda Layer (Powertools, Zod), IAM ロール, CloudWatch ロググループ (180日) | — |
 | monitoring | CloudWatch アラーム (5xx, Lambda エラー, DynamoDB スロットル, DLQ), SNS トピック, X-Ray 設定 | — |
 
 ### 4.3 IAM 最小権限設計（SECURITY-06 準拠）
@@ -422,7 +421,7 @@ API 呼び出し (ky)
 |---|---|---|
 | signup-handler | Users: PutItem, TasteProfiles: PutItem | — |
 | get-profile | Users: GetItem | — |
-| update-profile | Users: UpdateItem | — |
+| put-profile | Users: UpdateItem | — |
 | put-disclosure-level | Users: UpdateItem | — |
 | cognito-pre-signup-trigger | — | Secrets Manager: GetSecretValue（ブロックリスト設定） |
 | mfa-recovery-codes | Users: UpdateItem | KMS: Encrypt（リカバリーコードハッシュ） |

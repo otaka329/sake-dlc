@@ -30,7 +30,7 @@
 ### コールドスタート対策
 - Lambda バンドルサイズの最小化（esbuild による tree-shaking）
 - 共通依存の Lambda Layer 化
-- Lambda SnapStart（Node.js 対応、re:Invent 2024 前後に GA。正確な GA 日付は Infrastructure Design ステージで AWS 公式ドキュメントにて再確認）を全 Lambda に適用（無料、コールドスタート短縮）
+- Lambda SnapStart は Node.js 未対応（Java/Python のみ）。コールドスタート対策は esbuild tree-shaking + Lambda Layer + Powertools 遅延 import で対応
 - Provisioned Concurrency: 初期は不採用（MAU 100-500 ではサインアップ頻度が1日数件レベルのため常時課金が非効率）。サインアップ急増時のみ cognito-pre-signup-trigger に適用を検討
 
 ---

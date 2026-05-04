@@ -326,7 +326,7 @@ API Gateway での CORS 設定:
 | esbuild バンドル | 全 Lambda | Tree-shaking でバンドルサイズ最小化 |
 | AWS SDK v3 モジュラーインポート | 全 Lambda | 必要なクライアントのみインポート |
 | Lambda Layer | 共通依存（Powertools, Zod, pino） | 関数コード本体の軽量化 |
-| Lambda SnapStart | 全 Lambda（Node.js GA 後） | コールドスタート短縮（無料） |
+| Powertools 遅延 import | Tracer, Metrics | 未使用モジュールの初期化コスト回避 |
 | 接続の再利用 | DynamoDB DocumentClient | `keepAlive: true`（Node.js デフォルト） |
 
 ### 3.3 DynamoDB アクセスパターン最適化

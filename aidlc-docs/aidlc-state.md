@@ -43,7 +43,7 @@
 - [ ] Functional Design - Unit 2〜6
 - [x] NFR Requirements - Unit 1 Foundation
 - [x] NFR Design - Unit 1 Foundation
-- [ ] Infrastructure Design - EXECUTE
+- [x] Infrastructure Design - Unit 1 Foundation
 - [ ] Code Generation - EXECUTE
 - [ ] Build and Test - EXECUTE
 
@@ -52,6 +52,6 @@
 
 ## Current Status
 - **Lifecycle Phase**: CONSTRUCTION
-- **Current Stage**: Infrastructure Design - Unit 1 Foundation
-- **Next Stage**: Code Generation - Unit 1 Foundation
-- **Status**: NFR Design 承認完了、Progressive Disclosure Inception遡及反映完了。Infrastructure Design 実行中。リマインダー: (1) Inception正本同期（テーブル数6→5、Lambda数31、SakenowaCache PITR無効）、(2) CSP unsafe-inline除去はCode Generationに持ち越し、(3) Gateway Response 7種はapi-gatewayモジュールで具体化
+- **Current Stage**: Code Generation - Unit 1 Foundation
+- **Next Stage**: Build and Test
+- **Status**: Infrastructure Design 承認完了。Code Generation に進行。CSP unsafe-inline 除去/nonce 化判断は Code Generation で実施
