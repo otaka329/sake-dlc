@@ -30,6 +30,26 @@
 
 ---
 
+## アーキテクチャ
+
+![SDLC AWS Architecture](./docs/images/SDLC_Architecture.png)
+
+| レイヤー | コンポーネント |
+|---|---|
+| **CDN / 配信** | CloudFront (OAC) + S3 — PWA 静的ホスティング |
+| **認証** | Amazon Cognito (SRP / MFA / Advanced Security) + WAF |
+| **API** | API Gateway v2 (HTTP) → Lambda (Node.js 22 / Powertools v3) |
+| **スケジューラー** | EventBridge → Lambda（日次バックアップ・通知） |
+| **データ** | DynamoDB 5テーブル (Users / TasteProfiles / DrinkingLogs / SakenowaCache / AppData) |
+| **AI** | Amazon Bedrock — Claude (テキスト推薦) / Claude Vision (料理写真解析) |
+| **セキュリティ** | AWS KMS (HMAC リカバリーコード) / Secrets Manager / CloudTrail |
+| **監視** | CloudWatch Logs + Metrics (EMF) + X-Ray + SNS アラート |
+| **外部連携** | さけのわ API (銘柄データ) / Google Calendar API / Web Push (VAPID) |
+
+線の凡例: **実線** = データプレーン (HTTPS / API / DB) / **破線** = 制御プレーン (認証・DNS・証明書) / **点線** = ログ配信 (監査ログ非同期保存)
+
+---
+
 ## コンセプト
 
 CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイクルとして設計します。
