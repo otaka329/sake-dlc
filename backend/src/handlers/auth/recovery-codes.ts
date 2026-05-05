@@ -20,6 +20,11 @@ const RECOVERY_CODE_COUNT = 10;
 const RECOVERY_CODE_BYTES = 8; // 64ビット以上のランダム値
 const KMS_KEY_ID = process.env.KMS_RECOVERY_CODES_KEY_ID || '';
 
+// Fail-fast: KMS キー未設定時は Lambda 起動を即座に失敗させる
+if (!KMS_KEY_ID) {
+  throw new Error('KMS_RECOVERY_CODES_KEY_ID 環境変数が未設定です。MFA リカバリーコード機能は利用できません。');
+}
+
 /**
  * リカバリーコードを生成（平文）
  * 各コードは 64ビット以上のランダム値を16進数で表現

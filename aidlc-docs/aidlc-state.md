@@ -4,7 +4,7 @@
 - **Project Name**: SDLC — Sake Driven Life Cycle
 - **Project Type**: Greenfield
 - **Start Date**: 2026-04-28T00:00:00Z
-- **Current Stage**: CONSTRUCTION - Unit 1 Foundation - NFR Requirements
+- **Current Stage**: Unit 1 Foundation 完了 — Unit 2 AI Core 開始待ち
 
 ## Workspace State
 - **Existing Code**: No
@@ -45,13 +45,23 @@
 - [x] NFR Design - Unit 1 Foundation
 - [x] Infrastructure Design - Unit 1 Foundation
 - [x] Code Generation - Unit 1 Foundation
-- [ ] Build and Test - EXECUTE
+- [x] Build and Test - EXECUTE
 
 ### 🟡 OPERATIONS PHASE
 - [ ] Operations - PLACEHOLDER
 
 ## Current Status
 - **Lifecycle Phase**: CONSTRUCTION
-- **Current Stage**: Build and Test
+- **Current Stage**: Build and Test（完了）
 - **Next Stage**: Unit 2〜6 の Construction Phase（または Operations Phase）
-- **Status**: Code Generation 承認完了。次回は Build and Test から開始
+- **Status**: Unit 1 Foundation の全 Construction ステージ完了（Functional Design → NFR Requirements → NFR Design → Infrastructure Design → Code Generation → Build and Test）
+
+## 次回確認事項（後続ユニット引き継ぎ）
+
+### Unit 6 Infrastructure 着手時
+1. **KMS env var 配線** — `aws_lambda_function` 追加時に `environment.variables.KMS_RECOVERY_CODES_KEY_ID = module.lambda_base.recovery_codes_kms_key_id` を必ず接続。忘れると recovery-codes / delete-mfa Lambda がコールドスタート時に起動失敗（fail-fast 実装済み）
+
+### Unit 2 AI Core 着手時
+2. **サーバ側ブロックリスト実装** — `backend/src/lib/password-blocklist.ts` を Custom Auth Challenge または Pre Auth Trigger で配線。Cognito SDK 統合のタイミングで対応（BR-01-07 サーバーサイド多層防御）
+3. **MFA 削除フロー正規化** — `delete-mfa.ts` の VerifySoftwareToken 流用は暫定。Cognito SDK 統合時に AdminInitiateAuth → AdminRespondToAuthChallenge の正規フローへ移行
+4. **localStorage → HttpOnly Cookie 移行** — `logical-components.md` に明記済み。Cognito SDK 統合時に併せて実施。XSS 暴露面の最小化

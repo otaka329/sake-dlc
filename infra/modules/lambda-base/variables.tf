@@ -23,11 +23,6 @@ variable "backup_bucket_arn" {
   type = string
 }
 
-variable "kms_recovery_codes_key_arn" {
-  description = "MFA リカバリーコード用 KMS キー ARN"
-  type        = string
-}
-
 variable "log_retention_days" {
   description = "CloudWatch ログ保持日数（dev: 30, prod: 180）"
   type        = number

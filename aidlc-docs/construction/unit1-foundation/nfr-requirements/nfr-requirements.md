@@ -73,11 +73,8 @@
 - DynamoDB: ポイントインタイムリカバリ有効化（35日間）
 - S3: バージョニング有効化
 - CloudFront: Edge キャッシュ + S3 リージョン可用性（99.99%）で確保。Multi-region フェイルオーバーは将来要件
-- Cognito: 日次バックアップ Lambda（ユーザー属性エクスポート → S3）。`cognito-daily-backup`（EventBridge スケジュールトリガー）として Infrastructure Design で Lambda 関数一覧に追加予定（Lambda 総数 29→30）
-  - ⚠️ Infrastructure Design Plan に以下の同期ステップを含めること:
-    - `inception/application-design/components.md` BE-01 に `cognito-daily-backup` Lambda 追加
-    - `inception/application-design/application-design.md` Lambda 数を 30 に更新
-    - `inception/requirements/requirements.md` §7 トレーサビリティの Lambda 数を 30 に更新
+- Cognito: 日次バックアップ Lambda（ユーザー属性エクスポート → S3）。`cognito-daily-backup`（EventBridge スケジュールトリガー）として Infrastructure Design で Lambda 関数一覧に追加済み（Lambda 総数 31: API Lambda 30 + cognito-daily-backup）
+  - ✅ Inception 正本に反映済み（components.md BE-01、application-design.md、requirements.md §7）
 - Lambda: デッドレターキュー（SQS）設定
 
 ---

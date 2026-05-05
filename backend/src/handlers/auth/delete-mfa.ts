@@ -18,6 +18,11 @@ const kmsClient = new KMSClient({});
 
 const KMS_KEY_ID = process.env.KMS_RECOVERY_CODES_KEY_ID || '';
 
+// Fail-fast: KMS キー未設定時は Lambda 起動を即座に失敗させる
+if (!KMS_KEY_ID) {
+  throw new Error('KMS_RECOVERY_CODES_KEY_ID 環境変数が未設定です。MFA 無効化機能は利用できません。');
+}
+
 /**
  * DELETE /mfa — MFA 無効化
  * US-02B: MFA（多要素認証）設定
@@ -85,7 +90,17 @@ async function verifyRecoveryCode(
 
 /**
  * TOTP コードを Cognito で検証
- * AdminInitiateAuth → SOFTWARE_TOKEN_MFA チャレンジ → AdminRespondToAuthChallenge
+ *
+ * 現在の実装: VerifySoftwareToken を検証目的で使用。
+ * Cognito の仕様上、MFA 有効化済みユーザーに対しても VerifySoftwareToken は
+ * コードの正当性を検証できる（再セットアップにはならない）。
+ *
+ * 制約:
+ * - 同一コードの再利用拒否は Cognito 側で 30秒ウィンドウ内に制御
+ * - AdminInitiateAuth → SOFTWARE_TOKEN_MFA チャレンジの正規フローは
+ *   ユーザー名+パスワードが必要で、アクセストークンのみでは実行不可
+ *
+ * TODO: Unit 2 以降で Custom Auth Challenge フローへの移行を検討
  */
 async function verifyTotpCode(
   accessToken: string,

@@ -27,7 +27,9 @@
 
 ### 実装メモ
 - Cognito のパスワードポリシーは最小長のみ設定（15文字）。文字種混合ルールは無効化
-- ブロックリストチェックはLambdaトリガー（Pre Sign-up）で実装
+- ブロックリストチェックは Unit 1 ではフロントエンド（SignupPage.tsx）のみで実施
+- Cognito Pre Sign-up Trigger にはパスワードが渡されないため（AWS 仕様）、Trigger ではブロックリスト照合を実施しない
+- サーバーサイド再検証は Unit 2 の Cognito SDK 統合時に正規フロー（Custom Auth Challenge または Pre Auth Trigger）で実装予定。password-blocklist.ts を使用
 - ブロックリストソース: HaveIBeenPwned Passwords API（k-anonymity モデル）+ カスタム辞書
 - パスワードハッシュはCognito内部で処理（bcrypt相当）
 
@@ -40,6 +42,7 @@
 | BR-02-01 | Google/Apple OAuth認証が成功すること | OAuth 2.0フロー完了 |
 | BR-02-02 | 既存メールアカウントとソーシャルアカウントの紐付けが可能 | 同一メールアドレスで検出時にリンク |
 | BR-02-03 | 初回ソーシャルログイン時はプロファイル設定画面に遷移 | User.nickname が未設定の場合 |
+| BR-02-04 | ソーシャルログイン（ExternalProvider）時は Cognito Pre Sign-up Trigger でメール自動確認を有効化 | event.response.autoConfirmUser = true, autoVerifyEmail = true |
 
 ---
 

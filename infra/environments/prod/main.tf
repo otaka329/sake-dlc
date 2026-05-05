@@ -34,7 +34,6 @@ module "lambda_base" {
   app_data_table_arn      = module.dynamodb.app_data_table_arn
   cognito_user_pool_arn   = module.cognito.user_pool_arn
   backup_bucket_arn           = module.s3_cloudfront.logs_bucket_arn
-  kms_recovery_codes_key_arn  = "" # KMS キー作成後に設定
   log_retention_days          = 180
 }
 

@@ -11,6 +11,10 @@ import { created } from '../../lib/response';
  * POST /signup — ユーザープロファイル初期設定
  * US-01: ユーザー登録、US-02: ソーシャルログイン、US-30: オンボーディング経験レベル選択
  * BL-06: POST /signup ハンドラーロジック
+ *
+ * ブロックリスト照合（BR-01-07）はフロントエンド（SignupPage.tsx）で実施。
+ * サーバーサイド再検証は Unit 2 の Cognito SDK 統合時に正規フロー
+ * （Custom Auth Challenge または Pre Auth Trigger）で実装予定。
  */
 
 /**

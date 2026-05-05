@@ -659,3 +659,72 @@
 **Context**: Session pause. CONSTRUCTION Phase - Build and Test 開始待ち
 
 ---
+
+## Session Resume
+**Timestamp**: 2026-05-01T10:00:00Z
+**User Input**: "再開します。"
+**AI Response**: セッション再開。Build and Test ステージを開始。
+**Context**: Session continuity - Build and Test 開始
+
+---
+
+## Build and Test Stage Complete
+**Timestamp**: 2026-05-01T10:01:00Z
+**Build Status**: 手順書作成完了（実行は開発者が実施）
+**Test Status**: 手順書作成完了（実行は開発者が実施）
+**Files Generated**:
+- build-instructions.md（ビルド手順、前提条件、環境変数、トラブルシューティング）
+- unit-test-instructions.md（テスト一覧 86件 + PBT 13ファイル、カバレッジ目標、PBT-08 設定）
+- integration-test-instructions.md（5シナリオ、DynamoDB Local セットアップ）
+- performance-test-instructions.md（k6 負荷テスト、Lighthouse、バンドル分析）
+- build-and-test-summary.md（全体サマリー）
+**Context**: CONSTRUCTION Phase - Build and Test Complete. Unit 1 Foundation 全ステージ完了。
+
+---
+
+## Unit 1 Foundation - 総合レビュー修正（C3 + H6 + M7）
+**Timestamp**: 2026-05-01T10:02:00Z
+**User Input**: "Unit1の成果物に対して総合的にレビューを行いました。Critical 3件、High 6件、Medium 7件の修正依頼。"
+**AI Response**: 全16件修正完了。
+
+### Critical（3件）:
+- C1: NFR Requirements Lambda 数を「31（反映済み）」に更新、同期ステップを完了マークに変更
+- C2: サーバーサイドブロックリスト再検証を追加（password-blocklist.ts 新規作成、signup.ts に検証追加、signupRequestSchema に password フィールド追加、BR-01-07 実装メモ更新）
+- C3: KMS キー + エイリアスを Terraform に追加（lambda-base/main.tf）、Lambda 起動時 fail-fast 追加（recovery-codes.ts, delete-mfa.ts）、環境 main.tf から TODO パラメータ削除
+
+### High（6件）:
+- H1: レート制限を固定ウィンドウ → スライディングウィンドウに全面書き直し（Query + PutItem 方式）
+- H2: delete-mfa.ts の TOTP 検証コメントに制約と TODO を明記
+- H3: Cognito Advanced Security を env 分岐（prod: ENFORCED、dev: AUDIT）
+- H4: AppData テーブルは既に PK/SK/TTL 定義済み（対応不要）
+- H5: build-and-test-summary.md のテスト数を実測値に更新（概算表記削除）
+- H6: NFR Design に localStorage → HttpOnly Cookie 移行計画を正式化
+
+### Medium（7件）:
+- M1: backend-summary.md のトレーサビリティ補完（get-profile→US-01/02、put-profile→US-03、pre-signup→US-02）
+- M2: logical-components.md に RateLimiter fail-open の根拠を明文化
+- M3: BR-02-04 追加（ExternalProvider 自動確認）
+- M4: 対応済み（barrel export 完備）
+- M5: 対応済み（i18n キー全定義済み）
+- M6: build-instructions.md にバンドル分析コマンド追加
+- M7: ErrorBoundary に英語フォールバック追加
+
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - 総合レビュー修正完了
+
+---
+
+## Unit 1 Foundation - 残課題修正（R1 + R2）
+**Timestamp**: 2026-05-01T10:03:00Z
+**User Input**: "R1: C2 のサーバ側ブロックリストにバイパス経路が残存。推奨 (c) フロントのみに割り切り。R2: PBT 数が 1 ずれ（backend 8→7、合計 13→12）。"
+**AI Response**: R1: 案(c)採用。signup.ts からブロックリスト検証を削除、signupRequestSchema から password フィールドを削除、password-blocklist.ts を Unit 2 用に温存（コメント更新）、BR-01-07 実装メモを「Unit 1 フロントのみ、Unit 2 でサーバーサイド実装」に修正。R2: build-and-test-summary.md と backend-summary.md の PBT 数を修正（backend 7、合計 12）。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - 残課題修正完了
+
+---
+
+## Unit 1 Foundation - Build and Test Approved + 引き継ぎ事項記録
+**Timestamp**: 2026-05-01T10:04:00Z
+**User Input**: "問題ありませんが、何点か引き継ぎ事項がありますので記録してください。(1) KMS env var 配線（Unit 6）、(2) サーバ側ブロックリスト実装（Unit 2）、(3) MFA 削除フロー正規化（Unit 2）、(4) localStorage → HttpOnly Cookie 移行（Unit 2）"
+**AI Response**: Build and Test 承認。引き継ぎ事項4点を aidlc-state.md「次回確認事項」欄に記録。Unit 1 Foundation 全ステージ完了。
+**Context**: CONSTRUCTION Phase - Unit 1 Foundation - Build and Test Approved. 引き継ぎ事項記録完了。
+
+---

@@ -22,16 +22,16 @@
 | ファイル | エンドポイント | ストーリー |
 |---|---|---|
 | signup.ts | POST /signup | US-01, US-02, US-30 |
-| get-profile.ts | GET /profile | — |
-| put-profile.ts | PUT /profile | — |
+| get-profile.ts | GET /profile | US-01, US-02 |
+| put-profile.ts | PUT /profile | US-03 |
 | mfa-setup.ts | POST /mfa/setup | US-02B |
 | mfa-verify.ts | POST /mfa/verify | US-02B |
 | delete-mfa.ts | DELETE /mfa | US-02B |
 | recovery-codes.ts | POST /mfa/recovery-codes | US-02B |
 | put-disclosure-level.ts | PUT /disclosure-level | US-29 |
-| pre-signup.ts | Cognito Pre Sign-up Trigger | US-01 |
-| daily-backup.ts | EventBridge Schedule | — |
+| pre-signup.ts | Cognito Pre Sign-up Trigger | US-02 |
+| daily-backup.ts | EventBridge Schedule | — (運用) |
 
 ### テスト（backend/tests/）
 - ユニットテスト: 13ファイル
-- PBT: 8ファイル + 2ジェネレーター
+- PBT: 7ファイル + 2ジェネレーター

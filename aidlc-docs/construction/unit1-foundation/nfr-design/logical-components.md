@@ -13,7 +13,7 @@ AWS Powertools for TypeScript をベースとした共通ミドルウェア:
 | Logger | `@aws-lambda-powertools/logger` | 構造化ログ、correlationId 自動付与、PII マスク | SECURITY-03 |
 | Tracer | `@aws-lambda-powertools/tracer` | X-Ray トレーシング、AWS SDK 自動計装 | SECURITY-14 |
 | Metrics | `@aws-lambda-powertools/metrics` | カスタムメトリクス送出（EMF 形式） | SECURITY-14 |
-| RateLimiter | カスタム（DynamoDB アトミック演算） | ユーザーレベルレート制限（100 req/min、スライディングウィンドウ） | SECURITY-11 |
+| RateLimiter | カスタム（DynamoDB スライディングウィンドウ） | ユーザーレベルレート制限（100 req/min、スライディングウィンドウ）。DynamoDB 障害時は fail-open（可用性優先。レート制限はセキュリティの唯一の防御層ではなく、API Gateway ステージレベルスロットリングが第一層として機能するため） | SECURITY-11 |
 | ZodValidator | カスタム（Zod ラッパー） | リクエストボディ/パスパラメータ/クエリの型安全バリデーション | SECURITY-05 |
 | ErrorHandler | カスタム | グローバルエラーキャッチ、構造化エラーレスポンス生成、Fail-closed | SECURITY-09, 15 |
 | AuthExtractor | カスタム | JWT claims から userId 抽出、リクエストコンテキストに注入 | SECURITY-08 |
@@ -246,6 +246,8 @@ const apiClient = ky.create({
 | tokenStorage | localStorage ラッパー。トークンの保存・取得・削除 |
 
 ### トークンリフレッシュフロー
+
+⚠️ **移行計画**: Unit 1 では localStorage にトークンを保存（開発効率優先）。Unit 2 の Cognito SDK 統合時に HttpOnly Cookie ベースのセッション管理に移行する。XSS 暴露面を最小化するため、localStorage 保存は暫定措置であり、本番リリース前に必ず移行すること。
 
 ```
 API 呼び出し (ky)

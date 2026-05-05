@@ -25,9 +25,9 @@ resource "aws_cognito_user_pool" "main" {
     enabled = true
   }
 
-  # Advanced Security（Adaptive Authentication）
+  # Advanced Security（prod: ENFORCED、dev: AUDIT のみ — コスト削減）
   user_pool_add_ons {
-    advanced_security_mode = "ENFORCED"
+    advanced_security_mode = var.env == "prod" ? "ENFORCED" : "AUDIT"
   }
 
   # アカウント復旧（メールのみ）

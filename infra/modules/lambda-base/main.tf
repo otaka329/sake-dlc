@@ -69,6 +69,26 @@ resource "aws_iam_role_policy_attachment" "auth_xray" {
   policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 }
 
+# --- KMS キー: MFA リカバリーコード HMAC ---
+resource "aws_kms_key" "recovery_codes" {
+  description             = "SDLC MFA リカバリーコード HMAC-SHA-256 鍵 (${var.env})"
+  key_usage               = "GENERATE_VERIFY_MAC"
+  customer_master_key_spec = "HMAC_256"
+  deletion_window_in_days = 30
+  enable_key_rotation     = false # HMAC キーはローテーション非対応
+
+  tags = {
+    Project     = "sdlc"
+    Environment = var.env
+    Purpose     = "recovery-codes-hmac"
+  }
+}
+
+resource "aws_kms_alias" "recovery_codes" {
+  name          = "alias/sdlc-recovery-codes-${var.env}"
+  target_key_id = aws_kms_key.recovery_codes.key_id
+}
+
 # --- IAM ロール: MFA ハンドラー ---
 resource "aws_iam_role" "mfa_role" {
   name = "sdlc-mfa-role-${var.env}"
@@ -103,7 +123,7 @@ resource "aws_iam_role_policy" "mfa_dynamodb" {
       {
         Effect   = "Allow"
         Action   = ["kms:GenerateMac"]
-        Resource = [var.kms_recovery_codes_key_arn]
+        Resource = [aws_kms_key.recovery_codes.arn]
       },
     ]
   })

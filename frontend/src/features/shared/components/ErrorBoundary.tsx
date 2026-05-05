@@ -50,9 +50,13 @@ export class ErrorBoundary extends Component<Props, State> {
             padding: '32px',
           }}
         >
-          <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>エラーが発生しました</h1>
+          <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>
+            エラーが発生しました / An error occurred
+          </h1>
           <p style={{ color: '#666', marginBottom: '24px' }}>
             予期しないエラーが発生しました。ページを再読み込みしてください。
+            <br />
+            An unexpected error occurred. Please reload the page.
           </p>
           <button
             data-testid="error-boundary-reload-button"
@@ -66,7 +70,7 @@ export class ErrorBoundary extends Component<Props, State> {
               cursor: 'pointer',
             }}
           >
-            再読み込み
+            再読み込み / Reload
           </button>
         </div>
       );
