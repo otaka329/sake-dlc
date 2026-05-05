@@ -93,10 +93,10 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイ�
 - **AWS Lambda** (Node.js 22) + **Amazon API Gateway** v2 (TypeScript)
 - **esbuild** — ESM バンドル、Lambda Layer 依存関係を external 化
 - **AWS Lambda Powertools** (v3) — Logger (PII マスク) / Tracer (X-Ray) / Metrics (EMF)
-- **Amazon Cognito** — SRP 認証, MFA (TOTP), Advanced Security ENFORCED
+- **Amazon Cognito** — SRP 認証, MFA (TOTP), Advanced Security (prod: ENFORCED / dev: AUDIT)
 - **Amazon DynamoDB** (5テーブル: Users / TasteProfiles / DrinkingLogs / SakenowaCache / AppData)
 - **AWS KMS** — GenerateMac (HMAC-SHA-256) によるリカバリーコード ハッシュ
-- レート制限: DynamoDB ADD + ConditionExpression（固定ウィンドウ 100 req/min）
+- レート制限: DynamoDB Query+PutItem によるスライディングウィンドウ (100 req/min) + API Gateway ステージスロットリング (500 req/sec)
 
 ### AI / ML
 - **Amazon Bedrock (Claude / Claude Vision)** — 推薦・画像解析・「飲まない判定」生成
@@ -108,7 +108,7 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイ�
 - **Web Push (VAPID) + Amazon EventBridge** — プッシュ通知
 
 ### Infrastructure
-- **Terraform** による IaC 管理（7モジュール: cognito / api-gateway / dynamodb / s3-cloudfront / lambda-base / monitoring）
+- **Terraform** による IaC 管理（6モジュール: cognito / api-gateway / dynamodb / lambda-base / s3-cloudfront / monitoring）
 - **Amazon S3 + Amazon CloudFront** (OAC) で PWA 配信
 - **AWS CodeBuild** — CI ビルド仕様定義済み（CodePipeline 統合は Unit 6）
 
@@ -150,6 +150,7 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイ�
 - [Unit 1: Foundation — コードサマリー: バックエンド](./aidlc-docs/construction/unit1-foundation/code/backend-summary.md)
 - [Unit 1: Foundation — コードサマリー: フロントエンド](./aidlc-docs/construction/unit1-foundation/code/frontend-summary.md)
 - [Unit 1: Foundation — コードサマリー: インフラ](./aidlc-docs/construction/unit1-foundation/code/infrastructure-summary.md)
+- [Unit 1: Foundation — Build & Test 手順書](./aidlc-docs/construction/build-and-test/)
 
 ### プロセス追跡
 - [AI-DLC State](./aidlc-docs/aidlc-state.md) — 各フェーズの進捗状況
@@ -159,7 +160,7 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイ�
 
 ## 開発ステータス
 
-現在のフェーズ: **Construction / Unit 1 Foundation / Build & Test**
+現在のフェーズ: **Unit 1 Foundation 完了 — Unit 2 AI Core 開始待ち**
 
 - [x] Inception: Workspace Detection / Requirements / User Stories / Workflow Planning / Application Design / Units Generation
 - [x] Construction: Unit 1 Functional Design
@@ -167,7 +168,7 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイ�
 - [x] Construction: Unit 1 NFR Design
 - [x] Construction: Unit 1 Infrastructure Design
 - [x] Construction: Unit 1 Code Generation（全23ステップ / フルスタック承認済）
-- [ ] Construction: Unit 1 Build & Test
+- [x] Construction: Unit 1 Build & Test（手順書作成完了 / 総合レビュー修正反映済）
 - [ ] Construction: Unit 2 〜 Unit 6
 - [ ] Operations
 
