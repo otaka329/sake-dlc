@@ -860,3 +860,34 @@
 **Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Complete - Approved
 
 ---
+
+## Unit 2 AI Core - Infrastructure Design Plan & Questions Created
+**Timestamp**: 2026-05-03T10:03:00Z
+**AI Response**: Infrastructure Design計画と3問の質問を作成。質問内容: (1) Bedrockリージョン選択, (2) Lambda メモリサイズ, (3) Terraformモジュール構成
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Infrastructure Design Steps 1-4
+
+---
+
+## Unit 2 AI Core - Infrastructure Design Answers & Complete
+**Timestamp**: 2026-05-03T10:04:00Z
+**User Input**: Q1: A（東京リージョン）, Q2: B（512MB）, Q3: A（既存モジュールに追加）
+**AI Response**: 成果物生成完了。infrastructure-design.md（8セクション: Bedrock接続、Lambda4本、IAM2ロール、API Gateway3エンドポイント、Custom Resource、環境変数、監視5アラーム、ロググループ）。deployment-architecture.md（6セクション: Unit1共有関係、デプロイ手順、環境差分、Bedrockモデルアクセス、SECURITY準拠、ロールバック）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Infrastructure Design Step 7
+
+---
+
+## Unit 2 AI Core - Infrastructure Design Change Request (H2+M5+L4)
+**Timestamp**: 2026-05-03T10:05:00Z
+**User Input**: "High 2件（H1: dynamodb:Query欠落、H2: Bedrock推論プロファイル要否）+ Medium 5件（M1: タイムアウト29秒上限、M2: SakenowaCache書込経路、M3: IAMワイルドカード、M4: dont-deployコスト攻撃面、M5: モジュールパスドリフト）+ Low 4件（L1: IAM Condition実装、L2: バージョン採番一意化、L3: ハンドラーパス不一致、L4: xray:PutTelemetryRecords）"
+**AI Response**: 11点すべて修正。H1: dynamodb:Query追加。H2: 推論プロファイル要否のデプロイ前チェックリスト+IAMパターン(a)(b)を明記、ワイルドカード廃止。M1: recommend 20秒、dont-deploy/meta 10秒に。M2: SakenowaCache書込はUnit3担当と明記。M3: H2で解消（2モデル限定）。M4: SECURITY-11にコスト攻撃面の意図的受容+最悪ケース試算を明記。M5: NFR Design側にinfra決定注記追加。L1: IAM Condition JSON例追記。L2: バージョン採番をTerraform変数が唯一の正と明記。L3: HCLハンドラーをindex.handler（esbuild出力）に統一。L4: xray:PutTelemetryRecords追加済み。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Infrastructure Design Change Request
+
+---
+
+## Unit 2 AI Core - Infrastructure Design Approved
+**Timestamp**: 2026-05-03T10:06:00Z
+**User Input**: "問題ありません。"
+**AI Response**: Infrastructure Design 承認。コミット実行。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Infrastructure Design Complete - Approved
+
+---

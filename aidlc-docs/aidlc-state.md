@@ -4,8 +4,8 @@
 - **Project Name**: SDLC — Sake Driven Life Cycle
 - **Project Type**: Greenfield
 - **Start Date**: 2026-04-28T00:00:00Z
-- **Current Stage**: Unit 2 AI Core — NFR Design 完了（承認済み）
-- **Next Stage**: Unit 2 AI Core — Infrastructure Design
+- **Current Stage**: Unit 2 AI Core — Infrastructure Design 完了（承認済み）
+- **Next Stage**: Unit 2 AI Core — Code Generation
 
 ## Workspace State
 - **Existing Code**: No
@@ -54,9 +54,9 @@
 
 ## Current Status
 - **Lifecycle Phase**: CONSTRUCTION
-- **Current Stage**: Unit 2 AI Core — NFR Design（完了・承認済み）
-- **Next Stage**: Unit 2 AI Core — Infrastructure Design
-- **Status**: Unit 1 Foundation 全 Construction ステージ完了。Unit 2 AI Core は Functional Design + NFR Requirements + NFR Design 完了。次は Infrastructure Design。
+- **Current Stage**: Unit 2 AI Core — Infrastructure Design（完了・承認済み）
+- **Next Stage**: Unit 2 AI Core — Code Generation
+- **Status**: Unit 1 Foundation 全完了。Unit 2 AI Core は Functional Design + NFR Requirements + NFR Design + Infrastructure Design 完了。次は Code Generation。
 
 ## 次回確認事項（後続ユニット引き継ぎ）
 

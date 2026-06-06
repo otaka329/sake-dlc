@@ -150,7 +150,9 @@ BuildPage → RecommendationList（Layer 別表示）
 ### 4.3 Terraform Custom Resource（プロンプトシード）
 
 ```hcl
-# infra/modules/ai-core/prompt-seed.tf
+# infra/modules/lambda-base/prompt-seed.tf
+# ⚠️ Infrastructure Design（Q3=A）で既存 lambda-base モジュールに集約。
+# 本 NFR Design 作成時は infra/modules/ai-core/ を想定していたが、Q3=A で変更。
 
 resource "aws_lambda_function" "prompt_seeder" {
   function_name = "sdlc-prompt-seeder-${var.env}"
