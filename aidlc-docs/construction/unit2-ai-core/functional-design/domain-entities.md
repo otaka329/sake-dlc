@@ -24,7 +24,7 @@
 | フィールド | 型 | 必須 | 説明 |
 |---|---|---|---|
 | name | string | Yes | 料理名（テキスト入力 or 画像認識結果） |
-| category | enum | No | 料理カテゴリ（sashimi, grilled_fish, simmered, fried, meat, vegetable, dessert, other） |
+| category | enum | No | 料理カテゴリ（sashimi, grilled_fish, simmered, fried, meat, vegetable, nabe, dessert, other） |
 | source | enum (text, image) | Yes | 入力ソース |
 
 ---

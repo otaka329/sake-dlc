@@ -891,3 +891,26 @@
 **Context**: CONSTRUCTION Phase - Unit 2 AI Core - Infrastructure Design Complete - Approved
 
 ---
+
+## Unit 2 AI Core - Code Generation Plan Created
+**Timestamp**: 2026-05-03T10:07:00Z
+**AI Response**: Code Generation計画を作成。4フェーズ・17ステップ構成。Phase A: AIGateway本実装（Step 1-2: コア6モジュール + Tool Useスキーマ4個）、Phase B: バックエンド（Step 3-9: サービス3個 + ハンドラー4本 + テスト9+PBT5）、Phase C: フロントエンド（Step 10-14: PlanContext/PlanPage + BuildPage + i18n + テスト5）、Phase D: インフラ+デプロイ（Step 15-17: Terraform拡張 + プロンプト本文4個 + スクリプト更新）。7ストーリー（US-04,06,08,09,10,11,16）のトレーサビリティマッピング付き。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Code Generation Part 1 (Planning)
+
+---
+
+## Unit 2 AI Core - Code Generation Plan Change Request (H1+M4+L7)
+**Timestamp**: 2026-05-03T10:08:00Z
+**User Input**: "H1: shared-typesスキーマ定義ステップ欠落。M1: 料理カテゴリenum不整合。M2: プロンプト本文→シーダー受渡し未定義。M3: App.tsxルート差替えステップ無し。M4: API統合層・デバウンス暗黙。L1-L7: PBT取りこぼし、フロントPBT無し、テスト欠落、esbuildエントリ、Part1境界、AIGateway型所在、Unit3依存注記。"
+**AI Response**: 計画を全面再構成。H1: Step 1に shared-typesスキーマ追加を新設。M1: 料理カテゴリを8+other統一（domain-entities.mdも修正）。M2: 案A採用（シーダーにプロンプト本文バンドル、Step 7に明記）。M3: Step 13「App.tsxルート差替え」追加。M4: Step 11/12にhooks/api層+デバウンスを明記。L1: PBT 2件追加（Step 9）。L2: フロントPBT Step 16新設。L3: テスト3件追加（Step 15）。L4: esbuild自動glob注記（Step 18）。L5: Part1/2区分を補足欄で明記。L6: AIGateway型所在を依存関係欄に明記。L7: SakenowaCache空/スタブ前提を依存関係欄に明記。全19ステップに再編。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Code Generation Plan Change Request
+
+---
+
+## Unit 2 AI Core - Code Generation Plan Approved
+**Timestamp**: 2026-05-03T10:09:00Z
+**User Input**: "承認します。"
+**AI Response**: Code Generation計画承認。Part 2（実装）に進行。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Code Generation Part 1 Complete - Approved
+
+---
