@@ -728,3 +728,57 @@
 **Context**: CONSTRUCTION Phase - Unit 1 Foundation - Build and Test Approved. 引き継ぎ事項記録完了。
 
 ---
+
+## Session End
+**Timestamp**: 2026-05-01T10:05:00Z
+**User Input**: "ありがとうございます。一旦ここまでで終わります。"
+**AI Response**: セッション終了。Unit 1 Foundation 全ステージ完了・承認済み。次回再開ポイント: Unit 2 AI Core。
+**Context**: Session pause. Unit 1 Foundation 完了。Unit 2 AI Core 開始待ち。
+
+---
+
+## Session Resume
+**Timestamp**: 2026-05-02T10:00:00Z
+**User Input**: "作業を再開したいと思っています。feature/unit2-ai-core ブランチで。"
+**AI Response**: セッション再開。feature/unit2-ai-core ブランチ作成・チェックアウト済み。Unit 2 AI Core — Functional Design から開始。
+**Context**: Session continuity - Unit 2 AI Core 開始
+
+---
+
+## Unit 2 AI Core - Functional Design Plan & Questions Created
+**Timestamp**: 2026-05-02T10:01:00Z
+**AI Response**: Functional Design計画と7問の質問を作成。質問内容: (1) AI推薦出力の情報粒度, (2) Don't Deploy判定のAI依存度, (3) Bedrockモデルバリアント選定, (4) プロンプトテンプレート管理方式, (5) Plan画面の入力UIフロー, (6) 推薦結果×Progressive Disclosure連携, (7) 料理サジェストのデータソース
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design Steps 1-4
+
+---
+
+## Unit 2 AI Core - Functional Design Answers
+**Timestamp**: 2026-05-02T10:02:00Z
+**User Input**: ファイルに直接記入。Q1: B（標準粒度）, Q2: C（ハイブリッド判定）, Q3: B（ユースケース別モデル）, Q4: C（DynamoDB保存）, Q5: C（カード式UI）, Q6: C（銘柄カード形式）, Q7: C（ハイブリッドサジェスト）
+**AI Response**: 回答分析完了。矛盾・曖昧点なし。成果物生成に進行。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design Step 5
+
+---
+
+## Unit 2 AI Core - Functional Design Complete
+**Timestamp**: 2026-05-02T10:03:00Z
+**AI Response**: Functional Design成果物を生成。domain-entities.md（10エンティティ: PlanInput, DishInput, Recommendation, TemperatureRecommendation, FlavorScores, RecommendationResponse, DeployAdvice, AlternativeProposal, MetaResponse, PromptTemplate）。business-rules.md（BR-08〜BR-15: 推薦8ルール、判定8ルール、代替提案3ルール、カスタマイズ3ルール、メタ応答4ルール、コスト制御5ルール、テンプレート管理4ルール、サジェスト4ルール）。business-logic-model.md（BL-11〜BL-17: 推薦フロー、判定フロー、代替提案生成、メタ応答、AIGateway本実装、テンプレート取得、matchScore算出）。frontend-components.md（FE-02 PlanFeature: カード式UI 4カード + DeployAdvice表示、FE-03 BuildFeature: 推薦結果リスト + Layer別表示 + カスタマイズ + メタ応答ダイアログ、PlanContext定義、API統合3エンドポイント）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design Step 7
+
+---
+
+## Unit 2 AI Core - Functional Design Change Request (6点修正)
+**Timestamp**: 2026-05-02T10:04:00Z
+**User Input**: "🔴 要対応3件（CM-01 S3→DynamoDB矛盾、AIGateway modelId二重定義、BR-09-04時刻フィールド欠落）+ 🟡 検討推奨3件（SLA p95化、SYSTEM スコープ文書化、スコープ境界注記）"
+**AI Response**: 6点すべて修正。(1) components.md / component-methods.md の CM-01 を DynamoDB ベースに更新。(2) AIGatewayRequest から modelId を除去、テンプレートの modelId で一意化。BL-15、BR-13 を整合更新。(3) PlanInput に tomorrowEarliestStart フィールド追加、BR-09-04 / BL-12 / ScheduleCard / PlanContext を整合更新。(4) BR-08-05 を p95 定義に修正（タイムアウト 10秒は別途）。(5) Unit 1 logical-components.md AppData テーブルに SYSTEM スコープ追記。(6) domain-entities.md にスコープ境界注記テーブル追加（Unit 4/3/5 依存を明記、DishInput.source:image は前方互換）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design Change Request
+
+---
+
+## Unit 2 AI Core - Functional Design Review Verified & Approved
+**Timestamp**: 2026-06-06T00:00:00Z
+**User Input**: "6点すべて修正完了です。" → レビュー再検証依頼 → "お願いします"
+**AI Response**: 6点の修正を参照元（application-design CM-01、Unit 1 logical-components、user-stories）と成果物の突き合わせで再検証。全件クローズを確認。(1) components.md:146-147 / component-methods.md:11-13 が DynamoDB + Fail-closed に更新済みで上流 IF と一致。(2) BR-13-06 追加 + BL-15 整合、AIGatewayRequest に modelId なしで一意化。(3) tomorrowEarliestStart がドメイン→ルール→ロジック→FE→PlanContext/Action 型まで横断一貫。(4) BR-08-05 が p95 + 10秒タイムアウト→INTERNAL_ERROR。(5) logical-components.md:118,126 に PK:"SYSTEM" 追記。(6) domain-entities.md:138-146 にスコープ境界テーブル（Unit 3/4/5 依存、image 前方互換）。Functional Design 成果物を承認品質と判定。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design 承認
+
+---

@@ -143,7 +143,8 @@ DynamoDB NotificationSettings テーブルに PushSubscription（endpoint, keys.
 
 ### CM-01: AIGateway（AI Gateway）
 - **責務**: Bedrock Claude API呼び出しの一元管理、プロンプトテンプレート管理
-- **機能**: プロンプトテンプレートのS3からの読み込み、変数置換、API呼び出し、レスポンス解析
+- **機能**: プロンプトテンプレートの DynamoDB（AppData テーブル、PK: SYSTEM）からの取得・バージョン管理、変数置換、Bedrock API呼び出し、レスポンス解析、コスト計装メトリクス送出
+- **モデル選定**: テンプレートに紐づく modelId を使用（リクエスト引数では指定しない）
 - **利用元**: BE-02, BE-03, BE-05, BE-06
 
 ### CM-02: SakenowaClient（さけのわクライアント）
