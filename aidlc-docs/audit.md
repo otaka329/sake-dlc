@@ -828,3 +828,35 @@
 **Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Step 7
 
 ---
+
+## Session End
+**Timestamp**: 2026-05-02T10:11:00Z
+**User Input**: "今日の作業はここまでにしておきます。"
+**AI Response**: セッション終了。コミット be36913。次回再開ポイント: Unit 2 AI Core — NFR Design レビュー → 承認 → Infrastructure Design。
+**Context**: Session pause. Unit 2 AI Core — NFR Design 成果物生成済み、レビュー待ち。
+
+---
+
+## Session Resume
+**Timestamp**: 2026-05-03T10:00:00Z
+**User Input**: "作業を再開します。"
+**AI Response**: セッション再開。前回中断ポイント: Unit 2 AI Core — NFR Design レビュー待ち。
+**Context**: Session continuity - NFR Design 承認待ち
+
+---
+
+## Unit 2 AI Core - NFR Design Change Request (F1-F9)
+**Timestamp**: 2026-05-03T10:01:00Z
+**User Input**: "High 3件（F1: リトライ時間上限矛盾、F2: キャッシュキー正規化不足、F3: 回数カウンター非原子性）+ Medium 3件（F4: flavorScoresハルシネーション、F5: 上流ドキュメント未反映、F6: Tool Useスキーマ制約不足）+ Low 3件（F7: ドライラン回数消費、F8: 単価ハードコード、F9: flavorDataサイズ上限）"
+**AI Response**: 9点すべて修正。F1: リトライ1回に制限（p99 15秒/8秒保証）。F2: キャッシュキーに料理カテゴリ正規化+mood 5バケット化+tasteProfile 0.1量子化を追加。F3: 回数カウンターをUpdateItem+ConditionExpression一発に修正（GetItem廃止）。F4: flavorScoresはLambda側SakenowaCache付与のハイブリッド方式。F5: BL-17/BL-11/BR-08-04/PBT表に「NFR Designで改訂」注記追加。F6: Tool Useスキーマに minItems/maxItems/minimum/maximum/maxLength/enum制約追加。F7: ドライランは回数枠消費しないと明記。F8: 単価テーブルの定義箇所と更新トリガーを運用メモ追記。F9: flavorDataを上位30銘柄に制限と明記。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Change Request
+
+---
+
+## Unit 2 AI Core - NFR Design Approved
+**Timestamp**: 2026-05-03T10:02:00Z
+**User Input**: "承認します。次の作業を始める前にコミットをお願いします。"
+**AI Response**: NFR Design 承認。コミット実行。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Complete - Approved
+
+---

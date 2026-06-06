@@ -9,7 +9,7 @@
 | BR-08-01 | 推薦結果は3〜5件を返すこと | recommendations.length >= 3 && <= 5 |
 | BR-08-02 | 各推薦に銘柄名、温度、適量、器、理由を含むこと | 全フィールド非 null |
 | BR-08-03 | さけのわフレーバーチャートのデータを推薦根拠に使用すること | flavorScores が SakenowaCache から取得した値と一致 |
-| BR-08-04 | ユーザーの TasteProfile（6軸）と銘柄のフレーバースコアの適合度を算出すること | matchScore = 1 - ユークリッド距離 / 最大距離 |
+| BR-08-04 | ユーザーの TasteProfile（6軸）と銘柄のフレーバースコアの適合度を提示すること | matchScore は AI が算出（[0,1] 範囲を Zod で強制）。flavorScores は Lambda が SakenowaCache から付与（⚠️ NFR Design で改訂: 旧ユークリッド距離計算は廃止） |
 | BR-08-05 | レスポンスは p95 で5秒以内であること。Bedrock API タイムアウトは 10秒（タイムアウト時はエラー返却） | p95 latency <= 5000ms。タイムアウト超過時は INTERNAL_ERROR |
 | BR-08-06 | さけのわデータの帰属表示を含むこと | attribution に https://sakenowa.com へのリンクを含む |
 | BR-08-07 | Layer に応じて出力フォーマットを切り替えること | disclosureLevel 1: 感覚的表現、2: カテゴリ情報追加、3: 専門情報追加 |

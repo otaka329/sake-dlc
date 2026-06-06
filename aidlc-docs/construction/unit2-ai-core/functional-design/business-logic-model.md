@@ -16,14 +16,13 @@
    - {{dishes}}: 料理名リスト
    - {{mood}}: 気分
    - {{tasteProfile}}: 6軸スコア
-   - {{flavorData}}: さけのわフレーバーデータ（上位銘柄）
+   - {{flavorData}}: さけのわフレーバーデータ（**上位30銘柄に制限**。全銘柄を含めると入力トークンがコスト試算前提の2000を超過するため）
    - {{disclosureLevel}}: 開示レイヤー（出力フォーマット制御）
    - {{locale}}: ユーザー言語
 6. AIGateway 経由で Bedrock Claude 3.5 Sonnet を呼び出し
-7. AI レスポンスを構造化パース（JSON フォーマット指定）
-8. 各推薦銘柄の matchScore を算出:
-   matchScore = 1 - euclideanDistance(userProfile, brandFlavor) / sqrt(6)
-9. matchScore 降順でソート、上位3〜5件を選択
+7. AI レスポンスを構造化パース（Tool Use output → Zod バリデーション）
+8. Lambda が各推薦銘柄の brandId で SakenowaCache から flavorScores を取得・付与（ハルシネーション防止）
+9. ⚠️ matchScore は AI が算出済み（NFR Design で改訂。旧 BL-17 のユークリッド距離は廃止）
 10. コスト計装メトリクス送出（input_tokens, output_tokens, latency_ms）
 11. レスポンス返却（推薦結果 + 帰属表示）
 ```
@@ -153,19 +152,10 @@ Phase 2: AI 判定（グレーゾーン）
 ## BL-17: matchScore 算出ロジック
 
 ```
-入力: userProfile (6軸), brandFlavor (6軸)
+⚠️ NFR Design で改訂: matchScore は AI（Bedrock Tool Use）が算出する設計に変更。
+本 BL-17 のユークリッド距離計算は廃止。
+詳細: aidlc-docs/construction/unit2-ai-core/nfr-design/logical-components.md §5
 
-1. ユークリッド距離を算出:
-   distance = sqrt(
-     (user.f1 - brand.f1)^2 +
-     (user.f2 - brand.f2)^2 +
-     (user.f3 - brand.f3)^2 +
-     (user.f4 - brand.f4)^2 +
-     (user.f5 - brand.f5)^2 +
-     (user.f6 - brand.f6)^2
-   )
-2. 最大距離（全軸が 0 vs 1）= sqrt(6) ≈ 2.449
-3. matchScore = 1 - (distance / sqrt(6))
-4. クランプ: max(0, min(1, matchScore))
-5. 返却
+flavorScores は Lambda 側で SakenowaCache から付与（ハルシネーション防止）。
+matchScore のみ AI が算出（料理相性を含む総合判断、[0,1] 範囲は Zod で強制）。
 ```

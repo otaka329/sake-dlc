@@ -85,7 +85,30 @@ Claude 3 の Tool Use 機能を使用し、構造化出力を強制する:
         properties: {
           recommendations: {
             type: "array",
-            items: { /* Recommendation スキーマ */ }
+            minItems: 3,
+            maxItems: 5,
+            items: {
+              type: "object",
+              properties: {
+                brandId: { type: "integer" },
+                brandName: { type: "string", maxLength: 100 },
+                matchScore: { type: "number", minimum: 0, maximum: 1 },
+                temperature: {
+                  type: "object",
+                  properties: {
+                    type: { type: "string", enum: ["reishu", "jouon", "nurukan", "atsukan"] },
+                    celsius: { type: "integer", minimum: 0, maximum: 100 },
+                    label: { type: "string", maxLength: 50 },
+                    labelEn: { type: "string", maxLength: 50 }
+                  },
+                  required: ["type", "celsius", "label", "labelEn"]
+                },
+                amount: { type: "integer", minimum: 30, maximum: 300 },
+                vessel: { type: "string", maxLength: 50 },
+                reason: { type: "string", maxLength: 500 }
+              },
+              required: ["brandId", "brandName", "matchScore", "temperature", "amount", "vessel", "reason"]
+            }
           }
         },
         required: ["recommendations"]
@@ -95,6 +118,14 @@ Claude 3 の Tool Use 機能を使用し、構造化出力を強制する:
   }
 }
 ```
+
+**スキーマレベルの制約**:
+- recommendations: minItems=3, maxItems=5（BR-08-01 を Bedrock レベルで強制）
+- matchScore: minimum=0, maximum=1（[0,1] 範囲）
+- reason: maxLength=500（過度に長い理由文を防止）
+- celsius: minimum=0, maximum=100（物理的に妥当な範囲）
+- amount: minimum=30, maximum=300（BR-11-02 と整合）
+- temperature.type: enum 制約（4種のみ許可）
 
 **利点**:
 - JSON パース失敗のリスクを大幅に削減（Tool Use は構造化出力を保証）
@@ -120,6 +151,33 @@ BL-17（Lambda 側ユークリッド距離計算）は廃止。代わりに AI �
 フレーバーチャートの類似度に加え、料理との相性も考慮してください。
 ```
 
+### 1.4 flavorScores のハルシネーション防止（ハイブリッド方式）
+
+AI が出力する推薦結果の `flavorScores` はハルシネーションリスクがあるため、以下のハイブリッド方式を採用:
+
+| フィールド | 出力元 | 根拠 |
+|---|---|---|
+| brandId, brandName | AI（Tool Use） | AI が推薦銘柄を選定 |
+| matchScore | AI（Tool Use） | 料理相性を含む総合判断（[0,1] 範囲は Zod で強制） |
+| temperature, amount, vessel, reason | AI（Tool Use） | AI の推論による付加価値 |
+| flavorScores | **Lambda 側で SakenowaCache から付与** | ハルシネーション防止。AI 出力の flavorScores は無視 |
+
+**実装フロー**:
+```
+1. AI Tool Use が brandId + matchScore + temperature + reason 等を出力
+2. Lambda が brandId を使って SakenowaCache から正確な flavorScores を取得
+3. AI 出力の flavorScores フィールドがあれば上書き（SakenowaCache の値が正）
+4. SakenowaCache に該当 brandId がない場合は flavorScores = null（表示しない）
+```
+
+**BR-08-03 との整合**: 「さけのわフレーバーチャートのデータを推薦根拠に使用すること」→ Lambda が SakenowaCache から付与するため、正確なデータが保証される。
+
+**PBT への影響**:
+- matchScore: AI 出力のため決定的検証は不可。Invariant（[0,1] 範囲）のみ PBT で検証
+- flavorScores: Lambda 付与のため決定的。SakenowaCache のデータと一致することを検証可能
+
+**UI 表示注記**: matchScore は「料理相性込みの総合適合度」であり、flavorScores（純フレーバー距離）とは独立した概念。Layer 3 で両方を並べて表示する際、パワーユーザーが乖離を感じる可能性がある。RecommendationCard の UI / i18n で「適合度 = 料理・体調・嗜好を総合した AI 判断」であることを伝える表現にすること。
+
 ---
 
 ## 2. キャッシュ戦略
@@ -128,6 +186,39 @@ BL-17（Lambda 側ユークリッド距離計算）は廃止。代わりに AI �
 
 ```typescript
 import { createHash } from 'crypto';
+
+/**
+ * キャッシュキー生成（入力正規化付き）
+ * ヒット率50%を達成するため、以下の正規化を実施:
+ * - dishes: 料理名 → BR-15 の8カテゴリに正規化
+ * - mood: 自由テキスト → 5バケット(happy/tired/celebrate/relax/neutral)に分類
+ * - tasteProfile: 各軸を0.1刻みに量子化（0.0, 0.1, 0.2, ..., 1.0）
+ */
+
+// 料理カテゴリマッピング（BR-15 の8カテゴリ）
+const DISH_CATEGORIES = ['sashimi', 'grilled_fish', 'simmered', 'fried', 'meat', 'vegetable', 'nabe', 'dessert'] as const;
+
+function normalizeDishes(dishes: DishInput[]): string[] {
+  // 料理名からカテゴリを推定（サジェスト時に category が付与される前提）
+  // category 未設定の場合は 'other' にフォールバック
+  return dishes.map(d => d.category || 'other').sort();
+}
+
+function normalizeMood(mood: string): string {
+  // 自由テキストを5バケットに分類（キーワードマッチ）
+  const lower = mood.trim().toLowerCase();
+  if (/元気|嬉しい|happy|good/.test(lower)) return 'happy';
+  if (/疲|tired|だるい/.test(lower)) return 'tired';
+  if (/祝|celebrate|特別/.test(lower)) return 'celebrate';
+  if (/まったり|relax|のんびり/.test(lower)) return 'relax';
+  return 'neutral';
+}
+
+function quantizeProfile(profile: SixAxisProfile): SixAxisProfile {
+  // 各軸を0.1刻みに量子化（微小変動でキャッシュミスを防止）
+  const q = (v: number) => Math.round(v * 10) / 10;
+  return { f1: q(profile.f1), f2: q(profile.f2), f3: q(profile.f3), f4: q(profile.f4), f5: q(profile.f5), f6: q(profile.f6) };
+}
 
 function generateCacheKey(
   userId: string,
@@ -139,15 +230,23 @@ function generateCacheKey(
 ): string {
   const input = JSON.stringify({
     userId,
-    dishes: dishes.map(d => d.name).sort(), // 順序正規化
-    mood: mood.trim().toLowerCase(),
-    tasteProfile,
+    dishes: normalizeDishes(dishes),
+    mood: normalizeMood(mood),
+    tasteProfile: quantizeProfile(tasteProfile),
     disclosureLevel,
     locale,
   });
   return createHash('sha256').update(input).digest('hex').substring(0, 16);
 }
 ```
+
+**正規化によるヒット率向上の根拠**:
+- dishes: 「金目鯛の煮付け」「鯛の煮物」→ 両方 `simmered` に正規化 → 同一キー
+- mood: 「今日は疲れた」「ちょっとだるい」→ 両方 `tired` に正規化 → 同一キー
+- tasteProfile: 0.53 と 0.57 → 両方 0.5 に量子化 → 同一キー
+- userId 維持: ユーザー横断キャッシュは不採用（パーソナライズ推薦のため）
+
+**実装時注意**: `normalizeDishes` は `d.category` の存在に依存。サジェスト経由（BR-15）で選択された料理には category が付与されるが、自由テキスト入力の場合は `'other'` にフォールバックしヒット率が低下する。Code Generation 時に DishCard の実装で「自由入力時もカテゴリ推定ロジック（キーワードマッチ）を適用して category を付与する」導線を確保すること。
 
 ### 2.2 キャッシュフロー詳細
 
@@ -176,30 +275,31 @@ function generateCacheKey(
      |
      +-- 成功 → 通常フロー
      |
-     +-- 失敗（Zod エラー）
+     +-- 失敗（Zod エラー）かつ残り時間予算あり
           |
           v
-     リトライ1回目
-     (同一プロンプト + 「前回の出力が不正でした。正確な JSON で再出力してください」追加)
+     リトライ1回（最終）
+     (同一プロンプト + 「前回の出力が不正でした。正確な形式で再出力してください」追加)
           |
           +-- 成功 → 通常フロー
-          |
-          +-- 失敗
-               |
-               v
-          リトライ2回目（最終）
-               |
-               +-- 成功 → 通常フロー
-               +-- 失敗 → INTERNAL_ERROR 返却
+          +-- 失敗 → INTERNAL_ERROR 返却
 ```
+
+**リトライ回数を1回に制限する根拠**:
+- Tool Use は構造化出力を強制するため、パース失敗自体が稀
+- p99 < 15秒（推薦）/ 8秒（判定）の要件を保証するには、リトライ予算を1回に制限する必要がある
+- 2回目でも失敗するケースは Bedrock 側の一時的な異常であり、追加リトライの価値は低い
 
 ### 3.2 トータル時間上限
 
-| エンドポイント | 初回タイムアウト | リトライ上限 | トータル上限 | 根拠 |
+| エンドポイント | 初回タイムアウト | リトライ予算 | トータル上限 | 根拠 |
 |---|---|---|---|---|
-| POST /recommend | 10秒 | 5秒×2回 | 20秒 | p95: 5秒。リトライ発生は稀（Tool Use で構造化保証） |
-| POST /dont-deploy | 5秒 | 3秒×2回 | 11秒 | Haiku は高速 |
-| POST /meta-response | 5秒 | 3秒×2回 | 11秒 | 同上 |
+| POST /recommend | 10秒 | 5秒（1回のみ） | **15秒** | p99 < 15秒を保証。Tool Use でパース失敗自体が稀のため1回で十分 |
+| POST /dont-deploy | 5秒 | 3秒（1回のみ） | **8秒** | p99 < 8秒を保証 |
+| POST /meta-response | 5秒 | 3秒（1回のみ） | **8秒** | 同上 |
+
+⚠️ リトライは「パース失敗 + 5xx」のみ対象（1回まで）。合計時間が上限を超える場合はリトライせず即エラー返却。
+要件（nfr-requirements.md）の「トータル時間上限 推薦15秒、判定8秒」「p99 < 15秒保証」と整合。
 
 ### 3.3 Bedrock 障害時
 
@@ -219,11 +319,11 @@ function generateCacheKey(
 POST /recommend リクエスト
      |
      v
-DynamoDB GetItem (userId, AI_USAGE#{today})
+DynamoDB UpdateItem (アトミック: ADD count + ConditionExpression)
      |
-     +-- カウント < 3 → DynamoDB UpdateItem (ADD count :1) → AI 呼び出し
+     +-- 成功（count <= 3）→ AI 呼び出しへ
      |
-     +-- カウント >= 3 → 429 + 「本日の推薦回数上限に達しました」
+     +-- ConditionalCheckFailedException → 429 + 「本日の推薦回数上限に達しました」
 ```
 
 | 項目 | 設計 |
@@ -231,9 +331,11 @@ DynamoDB GetItem (userId, AI_USAGE#{today})
 | テーブル | AppData |
 | PK | userId |
 | SK | AI_USAGE#{YYYY-MM-DD} |
-| 属性 | count (number), ttl (翌日 00:00) |
-| 増分 | DynamoDB ADD（アトミック） |
+| 演算 | UpdateItem: `ADD count :1` + `ConditionExpression: attribute_not_exists(count) OR count < :limit` |
+| 上限値 | :limit = 3 |
 | TTL | 翌日 00:00 に自動削除 |
+| 競合制御 | DynamoDB の条件付き書き込みで原子的に増分+判定。GetItem 不要 |
+| ConditionalCheckFailed | 429 + メッセージ「本日の推薦回数上限に達しました。明日またお試しください。」 |
 
 ### 4.2 月次コスト推定メトリクス
 
@@ -243,6 +345,11 @@ DynamoDB GetItem (userId, AI_USAGE#{today})
 // → SDLC/AIGateway EstimatedMonthlyCost メトリクス（日次集計 × 30）
 ```
 
+**運用メモ**: モデル単価は AWS の価格改定で変動する。単価テーブルは以下に定義し、改定時に更新すること:
+- 定義箇所: `backend/src/lib/ai-gateway/cost-controller.ts` 内の `MODEL_PRICING` 定数
+- 現行単価: Sonnet $3/M in, $15/M out / Haiku $0.25/M in, $1.25/M out
+- 更新トリガー: AWS 公式価格ページの確認（四半期ごと推奨）
+
 ### 4.3 ドライランモード
 
 | 設定 | 動作 |
@@ -250,6 +357,7 @@ DynamoDB GetItem (userId, AI_USAGE#{today})
 | 環境変数 AI_GATEWAY_DRY_RUN=true | Bedrock 呼び出しをスキップ |
 | レスポンス | テンプレート置換後のプロンプト全文 + Tool Use スキーマを返却 |
 | メトリクス | DryRunCount を送出（コスト計装はスキップ） |
+| 回数制限 | **スキップ**（ドライランは日次3回枠を消費しない） |
 | 用途 | プロンプト調整時のデバッグ。dev 環境でのコスト $0 テスト |
 
 ---

@@ -194,19 +194,21 @@ resource "aws_cloudformation_stack" "prompt_seed" {
 
 ## 5. 設計変更注記
 
-### BL-17（matchScore 算出）の廃止
+### BL-17（matchScore 算出）の廃止 + flavorScores ハイブリッド方式
 
 NFR Design Q3=B の決定により、matchScore は AI（Bedrock Tool Use）が算出する設計に変更。
+flavorScores は Lambda が SakenowaCache から付与（ハルシネーション防止）。
 
 | 項目 | 旧設計（Functional Design） | 新設計（NFR Design） |
 |---|---|---|
 | matchScore 算出場所 | Lambda（BL-17 ユークリッド距離） | AI（Tool Use 出力に含む） |
-| 算出ロジック | 数学的（ユークリッド距離 / sqrt(6)） | AI 推論（フレーバー類似度 + 料理相性を総合判断） |
-| 精度 | 決定的（同一入力 → 同一結果） | 確率的（AI の推論に依存。Tool Use で [0,1] 範囲を強制） |
-| メリット | — | 料理との相性を考慮した「人間的な」適合度。Lambda の計算負荷削減 |
+| matchScore ロジック | 数学的（ユークリッド距離 / sqrt(6)） | AI 推論（フレーバー類似度 + 料理相性を総合判断） |
+| matchScore 精度 | 決定的（同一入力 → 同一結果） | 確率的（AI の推論に依存。[0,1] 範囲は Tool Use スキーマ + Zod で強制） |
+| flavorScores | AI 出力（ハルシネーションリスク） | **Lambda が SakenowaCache から付与**（正確性保証） |
+| メリット | — | 料理相性を含む「人間的な」適合度 + flavorScores の正確性を両立 |
 
-⚠️ **Functional Design 成果物への影響**:
-- `business-logic-model.md` BL-17 は「AI 側算出（Tool Use output に含む）」に読み替え
-- BL-11 Step 8-9（matchScore 算出 + ソート）は不要。AI が既にソート済みで出力
-- `business-rules.md` BR-08-04 の検証条件を「AI 出力の matchScore が [0,1] 範囲」に変更
-- `nfr-requirements.md` PBT 対象「matchScore 算出 Commutativity」は N/A に（AI 側算出のため対称性保証不要）
+**上流ドキュメントへの反映状況**:
+- ✅ `business-logic-model.md` BL-17: 「NFR Design で改訂」注記追加
+- ✅ `business-logic-model.md` BL-11 Step 8-9: flavorScores Lambda 付与 + matchScore AI 算出に書き換え
+- ✅ `business-rules.md` BR-08-04: 検証条件を「AI 出力 [0,1] + flavorScores は SakenowaCache から」に更新
+- ✅ `nfr-requirements.md` PBT 表: Commutativity を N/A に変更、Invariant のみ残存
