@@ -782,3 +782,34 @@
 **Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design 承認
 
 ---
+
+## Unit 2 AI Core - NFR Requirements Plan & Questions Created
+**Timestamp**: 2026-05-02T10:05:00Z
+**AI Response**: NFR Requirements計画と5問の質問を作成。質問内容: (1) レスポンスキャッシュ戦略, (2) 月次コスト上限, (3) パース失敗時フォールバック, (4) プロンプトシードデータ投入方法, (5) プライバシー（プロンプト送信データ方針）
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Requirements Steps 1-4
+
+---
+
+## Unit 2 AI Core - NFR Requirements Answers
+**Timestamp**: 2026-05-02T10:06:00Z
+**User Input**: ファイルに直接記入。Q1: C（ハイブリッドキャッシュ）, Q2: A（月額$50以下、5回/日制限）, Q3: A（リトライ最大2回）, Q4: A（Terraform Custom Resource）, Q5: A（全入力そのまま送信）
+**AI Response**: 回答分析完了。矛盾・曖昧点なし。成果物生成完了。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Requirements Step 5-7
+
+---
+
+## Unit 2 AI Core - NFR Requirements Change Request (Critical 1 + Medium 3)
+**Timestamp**: 2026-05-02T10:07:00Z
+**User Input**: "Critical: コスト試算が前提と桁違いに不整合（MAU 500×5回/日→75,000回で$2,137。表記$29は1/73）。Medium: (1) キャッシュキーに disclosureLevel/locale 欠落、(2) リトライとp95 SLAの競合、(3) DailyUsageCount の UserId ディメンション高カーディナリティ。"
+**AI Response**: 4点すべて修正。Critical: DAU/MAU比・利用率・平均回数を明示した現実的前提で再計算。$50達成のため推薦制限を5回→3回/日に厳格化、キャッシュヒット率目標50%に引き上げ。逆算試算を明記（56回/日実AI→$51/月）。Medium: (1) キャッシュキーに disclosureLevel+locale 追加。(2) リトライ対象を「パース失敗+5xxのみ」に限定、トータル時間上限明記（推薦15秒、判定8秒）、Bedrock 429 はリトライしない方針に変更。(3) DailyUsageCount から UserId ディメンション削除（per-user は DynamoDB 管理）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Requirements Change Request
+
+---
+
+## Unit 2 AI Core - NFR Requirements Approved
+**Timestamp**: 2026-05-02T10:08:00Z
+**User Input**: "確認しました。問題ありません。"
+**AI Response**: NFR Requirements 承認。aidlc-state.md を更新し、NFR Design に進行可能。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Requirements Complete - Approved
+
+---

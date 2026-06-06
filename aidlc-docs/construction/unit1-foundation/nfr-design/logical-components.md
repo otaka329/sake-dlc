@@ -132,7 +132,6 @@ import { Metrics } from '@aws-lambda-powertools/metrics';
 |   TTL: 有効 (RATELIMIT エントリの自動削除)                       |
 +------------------------------------------------------------------+
 ```
-```
 
 #### SakenowaCache テーブル
 ```
