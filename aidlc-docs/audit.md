@@ -813,3 +813,18 @@
 **Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Requirements Complete - Approved
 
 ---
+
+## Unit 2 AI Core - NFR Design Plan & Questions Created
+**Timestamp**: 2026-05-02T10:09:00Z
+**AI Response**: NFR Design計画と4問の質問を作成。質問内容: (1) AIレスポンスJSON構造化パース方式, (2) AIGatewayテスト・デバッグ支援, (3) matchScore算出の分担（AI vs Lambda）, (4) Terraform Custom Resourceライフサイクル管理
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Steps 1-4
+
+---
+
+## Unit 2 AI Core - NFR Design Answers & Complete
+**Timestamp**: 2026-05-02T10:10:00Z
+**User Input**: ファイルに直接記入。Q1: C（Tool Use）, Q2: A（ドライランモード）, Q3: B（AI側matchScore算出）, Q4: B（Create+Update自動バージョン）
+**AI Response**: 回答分析完了。Q3=BによりBL-17（Lambda側matchScore算出）を廃止、AI Tool Use出力に統合。成果物生成完了。nfr-design-patterns.md（6セクション: AI推論パイプライン、キャッシュ、リトライ、コスト制御、インジェクション防止、PBT 7対象）。logical-components.md（5セクション: AIGateway内部モジュール6個、サービス層3個、FE連携、インフラ、設計変更注記）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Step 7
+
+---
