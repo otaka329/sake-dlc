@@ -4,7 +4,7 @@ import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 
 /**
  * PBT: 推薦回数カウンター（本番コード checkDailyUsage を呼び出し）
- * Invariant: 3超過で RateLimitError
+ * Invariant: ConditionalCheckFailed → 常に RateLimitError
  */
 
 // DynamoDB モック
@@ -34,10 +34,10 @@ describe('PBT: checkDailyUsage（本番コード）', () => {
     delete process.env.AI_GATEWAY_DRY_RUN;
   });
 
-  it('DynamoDB が成功を返す場合は常にエラーなし', () => {
-    fc.assert(
-      fc.property(
-        fc.string({ minLength: 1, maxLength: 36 }), // userId
+  it('DynamoDB 成功時は常にエラーなし', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.string({ minLength: 1, maxLength: 36 }),
         async (userId) => {
           mockSend.mockResolvedValueOnce({});
           await expect(checkDailyUsage(userId)).resolves.toBeUndefined();
@@ -46,9 +46,9 @@ describe('PBT: checkDailyUsage（本番コード）', () => {
     );
   });
 
-  it('ConditionalCheckFailedException は常に RateLimitError', () => {
-    fc.assert(
-      fc.property(
+  it('ConditionalCheckFailedException は常に RateLimitError', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         fc.string({ minLength: 1, maxLength: 36 }),
         async (userId) => {
           mockSend.mockRejectedValueOnce(

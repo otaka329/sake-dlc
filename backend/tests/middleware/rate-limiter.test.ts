@@ -1,20 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 
 // DynamoDB モック
 const mockSend = vi.fn();
-vi.mock('@aws-sdk/client-dynamodb', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@aws-sdk/client-dynamodb')>();
-  return {
-    ...actual,
-    DynamoDBClient: vi.fn(() => ({})),
-  };
-});
+vi.mock('@aws-sdk/client-dynamodb', () => ({
+  DynamoDBClient: vi.fn(() => ({})),
+}));
 vi.mock('@aws-sdk/lib-dynamodb', () => ({
-  DynamoDBDocumentClient: {
-    from: vi.fn(() => ({ send: mockSend })),
-  },
-  UpdateCommand: vi.fn((params) => ({ input: params })),
+  DynamoDBDocumentClient: { from: vi.fn(() => ({ send: mockSend })) },
+  QueryCommand: vi.fn((params) => ({ input: params })),
+  PutCommand: vi.fn((params) => ({ input: params })),
 }));
 
 import { checkRateLimit } from '../../src/middleware/rate-limiter';
@@ -25,23 +19,24 @@ const mockLogger = {
   error: vi.fn(),
 } as any;
 
-describe('checkRateLimit', () => {
+describe('checkRateLimit（スライディングウィンドウ）', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('正常時はエラーをスローしない', async () => {
+  it('カウント < 100 の場合はエラーなし + PutItem で記録', async () => {
+    // Query → count 50（上限未満）
+    mockSend.mockResolvedValueOnce({ Count: 50 });
+    // PutItem → 成功
     mockSend.mockResolvedValueOnce({});
+
     await expect(checkRateLimit('user-123', mockLogger)).resolves.toBeUndefined();
+    expect(mockSend).toHaveBeenCalledTimes(2); // Query + PutItem
   });
 
-  it('ConditionalCheckFailedException → RateLimitError をスローする', async () => {
-    mockSend.mockRejectedValueOnce(
-      new ConditionalCheckFailedException({
-        message: 'The conditional request failed',
-        $metadata: {},
-      }),
-    );
+  it('カウント >= 100 の場合は RateLimitError', async () => {
+    // Query → count 100（上限到達）
+    mockSend.mockResolvedValueOnce({ Count: 100 });
 
     await expect(checkRateLimit('user-123', mockLogger)).rejects.toThrow(RateLimitError);
     expect(mockLogger.warn).toHaveBeenCalledWith(
@@ -50,27 +45,13 @@ describe('checkRateLimit', () => {
     );
   });
 
-  it('DynamoDB の予期しないエラー → fail-open（エラーをスローしない）', async () => {
-    mockSend.mockRejectedValueOnce(new Error('DynamoDB service unavailable'));
+  it('DynamoDB エラー → fail-open（エラーなし）', async () => {
+    mockSend.mockRejectedValueOnce(new Error('DynamoDB unavailable'));
 
     await expect(checkRateLimit('user-123', mockLogger)).resolves.toBeUndefined();
     expect(mockLogger.error).toHaveBeenCalledWith(
       'レート制限チェック失敗（スキップ）',
       expect.any(Error),
     );
-  });
-
-  it('固定ウィンドウ ID が 60秒刻みで計算される', () => {
-    const RATE_LIMIT_WINDOW_SECONDS = 60;
-    const now1 = 1700000000;
-    const now2 = 1700000059;
-    const now3 = 1700000060;
-
-    const windowId1 = Math.floor(now1 / RATE_LIMIT_WINDOW_SECONDS);
-    const windowId2 = Math.floor(now2 / RATE_LIMIT_WINDOW_SECONDS);
-    const windowId3 = Math.floor(now3 / RATE_LIMIT_WINDOW_SECONDS);
-
-    expect(windowId1).toBe(windowId2);
-    expect(windowId1).not.toBe(windowId3);
   });
 });

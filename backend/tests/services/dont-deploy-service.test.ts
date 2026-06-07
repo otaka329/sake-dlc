@@ -10,11 +10,10 @@ vi.mock('../../src/lib/ai-gateway', () => ({
 }));
 
 describe('DontDeployService - checkRules (ルールベース判定)', () => {
-  // checkRules はモジュール内関数なので、judge() 経由でテスト
-
   it('服薬あり → Skip Deploy（BR-09-01）', async () => {
     const { judge } = await import('../../src/services/dont-deploy-service');
     const result = await judge({ isMedicated: true }, 'user-1', 'ja');
+    expect(result).not.toHaveProperty('_dryRun');
     if (!('_dryRun' in result)) {
       expect(result.decision).toBe('skip_deploy');
       expect(result.ruleBased).toBe(true);
@@ -25,6 +24,7 @@ describe('DontDeployService - checkRules (ルールベース判定)', () => {
   it('体調スコア 2 → Skip Deploy（BR-09-02）', async () => {
     const { judge } = await import('../../src/services/dont-deploy-service');
     const result = await judge({ conditionScore: 2 }, 'user-1', 'ja');
+    expect(result).not.toHaveProperty('_dryRun');
     if (!('_dryRun' in result)) {
       expect(result.decision).toBe('skip_deploy');
       expect(result.ruleBased).toBe(true);
@@ -34,6 +34,7 @@ describe('DontDeployService - checkRules (ルールベース判定)', () => {
   it('睡眠 4時間以下 → Skip Deploy（BR-09-03）', async () => {
     const { judge } = await import('../../src/services/dont-deploy-service');
     const result = await judge({ sleepHours: 3 }, 'user-1', 'ja');
+    expect(result).not.toHaveProperty('_dryRun');
     if (!('_dryRun' in result)) {
       expect(result.decision).toBe('skip_deploy');
       expect(result.ruleBased).toBe(true);
@@ -46,6 +47,7 @@ describe('DontDeployService - checkRules (ルールベース判定)', () => {
       { tomorrowScheduleImportance: 5, tomorrowEarliestStart: '07:00' },
       'user-1', 'ja',
     );
+    expect(result).not.toHaveProperty('_dryRun');
     if (!('_dryRun' in result)) {
       expect(result.decision).toBe('skip_deploy');
       expect(result.ruleBased).toBe(true);
@@ -58,8 +60,9 @@ describe('DontDeployService - checkRules (ルールベース判定)', () => {
       { conditionScore: 4, isMedicated: false, sleepHours: 7 },
       'user-1', 'ja',
     );
+    expect(result).not.toHaveProperty('_dryRun');
     if (!('_dryRun' in result)) {
-      expect(result.ruleBased).toBe(false); // AI 判定
+      expect(result.ruleBased).toBe(false);
     }
   });
 });
