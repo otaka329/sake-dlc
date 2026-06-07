@@ -73,7 +73,7 @@
   - backend/src/handlers/ai/prompt-bodies/meta-response.txt（メタ応答プロンプト本文）
   - ⚠️ シーダーはプロンプト本文ファイルを esbuild バンドルに含め、templateId でファイルを読み取り DynamoDB に投入する設計（案A）
 
-- [ ] Step 8: バックエンドユニットテスト
+- [x] Step 8: バックエンドユニットテスト
   - backend/tests/lib/ai-gateway/template-manager.test.ts
   - backend/tests/lib/ai-gateway/cache-manager.test.ts
   - backend/tests/lib/ai-gateway/cost-controller.test.ts
@@ -85,7 +85,7 @@
   - backend/tests/handlers/ai/dont-deploy.test.ts
   - backend/tests/handlers/ai/meta-response.test.ts
 
-- [ ] Step 9: バックエンド PBT
+- [x] Step 9: バックエンド PBT
   - backend/tests/pbt/cache-key-generation.pbt.ts（Invariant: 同一入力→同一キー、disclosureLevel/locale差→異キー）
   - backend/tests/pbt/match-score-range.pbt.ts（Invariant: [0,1] 範囲）
   - backend/tests/pbt/daily-usage-counter.pbt.ts（Invariant: 0〜3、3超過で拒否）
