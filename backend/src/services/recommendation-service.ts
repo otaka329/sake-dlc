@@ -1,6 +1,5 @@
 import type { PlanInput, Recommendation, RecommendationResponse, DisclosureLevel } from '@sdlc/shared-types';
 import type { SixAxisProfile } from '@sdlc/shared-types';
-import { recommendationSchema } from '@sdlc/shared-types';
 import { z } from 'zod';
 import { GetCommand } from '@aws-sdk/lib-dynamodb';
 import {
@@ -10,7 +9,6 @@ import {
   getCachedResponse,
   setCachedResponse,
   emitCacheMetric,
-  isDryRun,
 } from '../lib/ai-gateway';
 import { estimateCost } from '../lib/ai-gateway/cost-controller';
 import {
@@ -44,8 +42,6 @@ const toolUseResponseSchema = z.object({
     }),
   ).min(3).max(5),
 });
-
-type ToolUseRecommendationOutput = z.infer<typeof toolUseResponseSchema>;
 
 const SAKENOWA_ATTRIBUTION = 'データ提供: さけのわ (https://sakenowa.com)';
 const RECOMMEND_TIMEOUT_MS = 10_000;
@@ -123,15 +119,9 @@ export async function recommend(
     };
   });
 
-  // 7. レスポンス構築
+  // 7. レスポンス構築（deployAdvice は /dont-deploy が担当のため含めない）
   const response: RecommendationResponse = {
     recommendations,
-    deployAdvice: {
-      decision: 'deploy',
-      confidence: 0.7,
-      reason: '推薦結果が生成されました。体調に問題がなければ楽しんでください。',
-      ruleBased: false,
-    },
     attribution: SAKENOWA_ATTRIBUTION,
   };
 
@@ -140,7 +130,7 @@ export async function recommend(
 
   // L3: EstimatedMonthlyCost 送出
   const cost = estimateCost(result.response.modelId, result.response.inputTokens, result.response.outputTokens);
-  metrics.addMetric('EstimatedMonthlyCost', MetricUnit.None, cost * 30); // 日次 → 月次概算
+  metrics.addMetric('EstimatedCost', MetricUnit.NoUnit, cost); // per-call コスト（月次推定は CloudWatch メトリクス数式で算出）
   metrics.publishStoredMetrics();
 
   return response;

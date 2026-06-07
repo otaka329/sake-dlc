@@ -1,7 +1,6 @@
 import type { PlanInput, DeployAdvice, AlternativeProposal } from '@sdlc/shared-types';
-import { deployAdviceSchema, alternativeProposalSchema } from '@sdlc/shared-types';
 import { z } from 'zod';
-import { invoke, isDryRun } from '../lib/ai-gateway';
+import { invoke } from '../lib/ai-gateway';
 import {
   DONT_DEPLOY_TOOL_NAME,
   DONT_DEPLOY_TOOL_DESCRIPTION,
@@ -12,9 +11,6 @@ import {
   ALTERNATIVE_TOOL_DESCRIPTION,
   ALTERNATIVE_TOOL_SCHEMA,
 } from '../lib/ai-gateway/schemas/alternative-tool';
-import { createLogger } from '../lib/logger';
-
-const logger = createLogger('dont-deploy-service');
 
 const DONT_DEPLOY_TIMEOUT_MS = 5_000;
 const ALTERNATIVE_TIMEOUT_MS = 5_000;
@@ -42,7 +38,7 @@ const alternativeResponseSchema = z.object({
  */
 export async function judge(
   planInput: PlanInput,
-  userId: string,
+  _userId: string,
   locale: string,
 ): Promise<DeployAdvice | { _dryRun: true; response: unknown }> {
   // Phase 1: ルールベース判定（BR-09-01〜04）

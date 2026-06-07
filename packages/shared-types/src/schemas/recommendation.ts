@@ -43,10 +43,11 @@ export type Recommendation = z.infer<typeof recommendationSchema>;
 
 /**
  * 推薦レスポンススキーマ
+ * deployAdvice は optional: /recommend では返さない（/dont-deploy が担当）
  */
 export const recommendationResponseSchema = z.object({
   recommendations: z.array(recommendationSchema).min(3).max(5),
-  deployAdvice: deployAdviceSchema,
+  deployAdvice: deployAdviceSchema.optional(),
   attribution: z.string(),
 });
 export type RecommendationResponse = z.infer<typeof recommendationResponseSchema>;

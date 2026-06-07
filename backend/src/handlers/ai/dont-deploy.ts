@@ -4,8 +4,7 @@ import type { PlanInput, AuthContext } from '@sdlc/shared-types';
 import { createHandler } from '../../middleware/create-handler';
 import { judge } from '../../services/dont-deploy-service';
 import { success } from '../../lib/response';
-import { GetCommand } from '@aws-sdk/lib-dynamodb';
-import { getDocClient, TableNames } from '../../lib/dynamodb';
+import { getUserProfileInfo } from '../../lib/user-profile';
 
 /**
  * POST /dont-deploy — Don't Deploy Today 判定
@@ -22,21 +21,9 @@ export const handler = createHandler<PlanInput>(
     auth: AuthContext,
     body: PlanInput,
   ): Promise<APIGatewayProxyResult> => {
-    // ユーザーの locale を取得
-    const docClient = getDocClient();
-    const userResult = await docClient.send(
-      new GetCommand({
-        TableName: TableNames.users(),
-        Key: { userId: auth.userId, entityType: 'PROFILE' },
-        ProjectionExpression: 'locale',
-      }),
-    );
-    const locale = (userResult.Item?.locale as string) || 'ja';
-
-    // 判定実行
+    const { locale } = await getUserProfileInfo(auth.userId);
     const result = await judge(body, auth.userId, locale);
 
-    // ドライラン判定
     if ('_dryRun' in result) {
       return success(result.response);
     }

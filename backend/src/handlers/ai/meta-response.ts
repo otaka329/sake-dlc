@@ -4,8 +4,7 @@ import type { MetaResponseRequest, AuthContext } from '@sdlc/shared-types';
 import { createHandler } from '../../middleware/create-handler';
 import { respond } from '../../services/meta-response-service';
 import { success } from '../../lib/response';
-import { GetCommand } from '@aws-sdk/lib-dynamodb';
-import { getDocClient, TableNames } from '../../lib/dynamodb';
+import { getUserProfileInfo } from '../../lib/user-profile';
 
 /**
  * POST /meta-response — メタ応答
@@ -22,21 +21,9 @@ export const handler = createHandler<MetaResponseRequest>(
     auth: AuthContext,
     body: MetaResponseRequest,
   ): Promise<APIGatewayProxyResult> => {
-    // ユーザーの locale を取得
-    const docClient = getDocClient();
-    const userResult = await docClient.send(
-      new GetCommand({
-        TableName: TableNames.users(),
-        Key: { userId: auth.userId, entityType: 'PROFILE' },
-        ProjectionExpression: 'locale',
-      }),
-    );
-    const locale = (userResult.Item?.locale as string) || 'ja';
-
-    // メタ応答実行
+    const { locale } = await getUserProfileInfo(auth.userId);
     const result = await respond(body.message, locale);
 
-    // パターン非該当（null）→ 通常推薦フローを促すメッセージ
     if (result === null) {
       return success({
         message: '推薦画面から「推薦を受ける」を選んでください。',
@@ -45,7 +32,6 @@ export const handler = createHandler<MetaResponseRequest>(
       });
     }
 
-    // ドライラン判定
     if ('_dryRun' in result) {
       return success(result.response);
     }

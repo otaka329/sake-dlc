@@ -1,14 +1,11 @@
 import type { MetaResponse } from '@sdlc/shared-types';
 import { z } from 'zod';
-import { invoke, isDryRun } from '../lib/ai-gateway';
+import { invoke } from '../lib/ai-gateway';
 import {
   META_RESPONSE_TOOL_NAME,
   META_RESPONSE_TOOL_DESCRIPTION,
   META_RESPONSE_TOOL_SCHEMA,
 } from '../lib/ai-gateway/schemas/meta-response-tool';
-import { createLogger } from '../lib/logger';
-
-const logger = createLogger('meta-response-service');
 
 const META_RESPONSE_TIMEOUT_MS = 5_000;
 
