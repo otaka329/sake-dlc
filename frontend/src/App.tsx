@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router';
 import { AppShell } from './features/shared/components/AppShell';
 import { ProtectedRoute } from './features/shared/components/ProtectedRoute';

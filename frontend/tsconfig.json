@@ -11,12 +11,8 @@
     "declaration": false,
     "declarationMap": false,
     "paths": {
-      "@/*": ["./src/*"],
-      "@sdlc/shared-types": ["../packages/shared-types/src"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"],
-  "references": [
-    { "path": "../packages/shared-types" }
-  ]
+  "include": ["src/**/*"]
 }

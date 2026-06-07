@@ -1,5 +1,5 @@
 import type { CloudFormationCustomResourceEvent, Context } from 'aws-lambda';
-import { PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { getDocClient, TableNames } from '../../lib/dynamodb';
