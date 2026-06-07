@@ -37,7 +37,7 @@
   - packages/shared-types/src/types/dish-category.ts（料理カテゴリ enum: sashimi, grilled_fish, simmered, fried, meat, vegetable, nabe, dessert + other。8カテゴリ + フォールバック値 other に統一）
   - packages/shared-types/src/index.ts 更新（新スキーマの re-export 追加）
 
-- [ ] Step 2: AIGateway コアモジュール
+- [x] Step 2: AIGateway コアモジュール
   - backend/src/lib/ai-gateway/index.ts（ファサード: invoke メソッド + ドライランモード分岐）
   - backend/src/lib/ai-gateway/template-manager.ts（DynamoDB Query テンプレート取得 + 変数置換 + 未置換検証）
   - backend/src/lib/ai-gateway/bedrock-invoker.ts（Bedrock InvokeModel Tool Use 呼び出し + タイムアウト）
