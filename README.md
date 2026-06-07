@@ -99,8 +99,8 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイ�
 - レート制限: DynamoDB Query+PutItem によるスライディングウィンドウ (100 req/min) + API Gateway ステージスロットリング (500 req/sec)
 
 ### AI / ML
-- **Amazon Bedrock (Claude / Claude Vision)** — 推薦・画像解析・「飲まない判定」生成
-- プロンプトテンプレートは S3 で管理
+- **Amazon Bedrock** — Claude 3.5 Sonnet (推薦) / Claude 3 Haiku (Don't Deploy 判定・メタ応答) を Tool Use で構造化出力。Claude Vision (料理写真解析) は Unit 3
+- プロンプトテンプレートは DynamoDB (AppData, PK=SYSTEM) でバージョン管理、Terraform Custom Resource でシード投入
 
 ### External APIs
 - **さけのわAPI** — 銘柄・蔵元・フレーバー情報（[sakenowa.com](https://sakenowa.com) 帰属表示）
@@ -151,6 +151,11 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイ�
 - [Unit 1: Foundation — コードサマリー: フロントエンド](./aidlc-docs/construction/unit1-foundation/code/frontend-summary.md)
 - [Unit 1: Foundation — コードサマリー: インフラ](./aidlc-docs/construction/unit1-foundation/code/infrastructure-summary.md)
 - [Unit 1: Foundation — Build & Test 手順書](./aidlc-docs/construction/build-and-test/)
+- [Unit 2: AI Core — 機能設計](./aidlc-docs/construction/unit2-ai-core/functional-design/)
+- [Unit 2: AI Core — NFR要件](./aidlc-docs/construction/unit2-ai-core/nfr-requirements/)
+- [Unit 2: AI Core — NFR設計](./aidlc-docs/construction/unit2-ai-core/nfr-design/)
+- [Unit 2: AI Core — インフラ設計](./aidlc-docs/construction/unit2-ai-core/infrastructure-design/)
+- [Unit 2: AI Core — コード生成計画 (全19ステップ)](./aidlc-docs/construction/plans/unit2-ai-core-code-generation-plan.md)
 
 ### プロセス追跡
 - [AI-DLC State](./aidlc-docs/aidlc-state.md) — 各フェーズの進捗状況
@@ -160,7 +165,7 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイ�
 
 ## 開発ステータス
 
-現在のフェーズ: **Unit 1 Foundation 完了 — Unit 2 AI Core 開始待ち**
+現在のフェーズ: **Unit 2 AI Core 構築中** — バックエンド実装＋テスト完了（Code Gen Step 1–9 / typecheck・lint・test グリーン）、フロントエンド（Step 10〜）着手前
 
 - [x] Inception: Workspace Detection / Requirements / User Stories / Workflow Planning / Application Design / Units Generation
 - [x] Construction: Unit 1 Functional Design
@@ -169,7 +174,12 @@ CI/CDの比喩を用いて、日本酒体験を6ステップのライフサイ�
 - [x] Construction: Unit 1 Infrastructure Design
 - [x] Construction: Unit 1 Code Generation（全23ステップ / フルスタック承認済）
 - [x] Construction: Unit 1 Build & Test（手順書作成完了 / 総合レビュー修正反映済）
-- [ ] Construction: Unit 2 〜 Unit 6
+- [x] Construction: Unit 2 AI Core Functional Design
+- [x] Construction: Unit 2 AI Core NFR Requirements / NFR Design
+- [x] Construction: Unit 2 AI Core Infrastructure Design
+- [x] Construction: Unit 2 AI Core Code Generation — バックエンド（Step 1–9: shared-types / AIGateway / サービス3 / ハンドラー3 / ユニットテスト + PBT、全テスト153件グリーン）
+- [ ] Construction: Unit 2 AI Core Code Generation — フロントエンド（Step 10〜: PlanPage / BuildPage / i18n）
+- [ ] Construction: Unit 3 〜 Unit 6
 - [ ] Operations
 
 ---
