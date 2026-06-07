@@ -65,7 +65,7 @@
   - backend/src/services/meta-response-service.ts（BL-14: パターン検出 → AI メタ応答）
   - backend/src/handlers/ai/meta-response.ts（POST /meta-response）
 
-- [ ] Step 7: プロンプトシーダー
+- [x] Step 7: プロンプトシーダー
   - backend/src/handlers/ai/seed-prompts.ts（Custom Resource Lambda: テンプレート本文をバンドルから読み込み + DynamoDB 投入）
   - backend/src/handlers/ai/prompt-bodies/recommend.txt（推薦プロンプト本文）
   - backend/src/handlers/ai/prompt-bodies/dont-deploy.txt（判定プロンプト本文）
