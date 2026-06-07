@@ -73,7 +73,7 @@
 | フィールド | 型 | 必須 | 説明 |
 |---|---|---|---|
 | recommendations | Recommendation[] | Yes | 推薦結果リスト（3〜5件） |
-| deployAdvice | DeployAdvice | Yes | Deploy/Skip Deploy 判定結果 |
+| deployAdvice | DeployAdvice | No | Deploy/Skip Deploy 判定結果。/recommend では返さない（/dont-deploy が担当）。フロントは /dont-deploy の結果を PlanContext に保持して使用 |
 | attribution | string | Yes | さけのわデータ帰属表示テキスト + URL |
 
 ---
