@@ -28,7 +28,7 @@
 
 ### Phase A: 共有型 + AIGateway 本実装
 
-- [ ] Step 1: shared-types に Unit 2 ドメインスキーマ追加
+- [x] Step 1: shared-types に Unit 2 ドメインスキーマ追加
   - packages/shared-types/src/schemas/plan-input.ts（PlanInput, DishInput の Zod スキーマ）
   - packages/shared-types/src/schemas/recommendation.ts（Recommendation, TemperatureRecommendation, FlavorScores, RecommendationResponse の Zod スキーマ）
   - packages/shared-types/src/schemas/deploy-advice.ts（DeployAdvice, AlternativeProposal の Zod スキーマ）

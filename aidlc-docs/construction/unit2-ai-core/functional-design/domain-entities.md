@@ -39,7 +39,7 @@
 | amount | number | Yes | 適量（ml） |
 | vessel | string | Yes | 推奨器（猪口、ぐい呑み、ワイングラス 等） |
 | reason | string | Yes | 推薦理由（2〜3文） |
-| flavorScores | FlavorScores | Yes | さけのわフレーバースコア（6軸） |
+| flavorScores | FlavorScores | nullable | さけのわフレーバースコア（6軸）。Lambda が SakenowaCache から付与。該当 brandId なしの場合 null（F4） |
 | matchScore | number (0-1) | Yes | ユーザー嗜好との適合度 |
 
 ---

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 // ky のモックは複雑なため、token-storage のロジックをテスト
 import { getTokens, setTokens, clearTokens } from '../../src/lib/token-storage';
