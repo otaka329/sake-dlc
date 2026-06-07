@@ -45,7 +45,7 @@
   - backend/src/lib/ai-gateway/cache-manager.ts（キャッシュキー正規化・生成 + DynamoDB 読み書き。料理カテゴリは shared-types の enum を使用）
   - backend/src/lib/ai-gateway/cost-controller.ts（推薦回数制限アトミック UpdateItem + コスト計装メトリクス）
 
-- [ ] Step 3: Tool Use スキーマ定義
+- [x] Step 3: Tool Use スキーマ定義
   - backend/src/lib/ai-gateway/schemas/recommend-tool.ts（推薦 Tool Use input_schema: minItems:3, maxItems:5, matchScore [0,1] 等）
   - backend/src/lib/ai-gateway/schemas/dont-deploy-tool.ts（判定 Tool Use input_schema）
   - backend/src/lib/ai-gateway/schemas/meta-response-tool.ts（メタ応答 Tool Use input_schema）
@@ -53,15 +53,15 @@
 
 ### Phase B: バックエンド Lambda ハンドラー
 
-- [ ] Step 4: RecommendationService + ハンドラー（US-08, US-11）
+- [x] Step 4: RecommendationService + ハンドラー（US-08, US-11）
   - backend/src/services/recommendation-service.ts（BL-11: キャッシュ判定 → AI推薦 → flavorScores Lambda付与 via SakenowaCache）
   - backend/src/handlers/ai/recommend.ts（POST /recommend: 回数制限 → RecommendationService → レスポンス）
 
-- [ ] Step 5: DontDeployService + ハンドラー（US-09, US-10）
+- [x] Step 5: DontDeployService + ハンドラー（US-09, US-10）
   - backend/src/services/dont-deploy-service.ts（BL-12: ルールベース Phase 1 → AI判定 Phase 2 → 代替提案 BL-13）
   - backend/src/handlers/ai/dont-deploy.ts（POST /dont-deploy）
 
-- [ ] Step 6: MetaResponseService + ハンドラー（US-16）
+- [x] Step 6: MetaResponseService + ハンドラー（US-16）
   - backend/src/services/meta-response-service.ts（BL-14: パターン検出 → AI メタ応答）
   - backend/src/handlers/ai/meta-response.ts（POST /meta-response）
 
