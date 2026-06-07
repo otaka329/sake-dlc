@@ -110,7 +110,7 @@ export function emitCacheMetric(hit: boolean): void {
  * アラーム sdlc-ai-cost-warning（>$40）がこのメトリクスに依存。
  */
 export function estimateCost(modelId: string, inputTokens: number, outputTokens: number): number {
-  const pricing = MODEL_PRICING[modelId];
+  const pricing = Object.hasOwn(MODEL_PRICING, modelId) ? MODEL_PRICING[modelId] : undefined;
   if (!pricing) return 0;
   return (inputTokens * pricing.inputPerMillion + outputTokens * pricing.outputPerMillion) / 1_000_000;
 }
