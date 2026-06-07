@@ -1,79 +1,83 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 
 /**
- * PBT: Don't Deploy ルールベース判定
+ * PBT: Don't Deploy ルールベース判定（本番コード judge() 経由）
  * Invariant: 服薬あり → 常に Skip Deploy（BR-09-01）
+ *
+ * judge() は内部で checkRules（未export）を使うため、judge() 経由でテスト。
+ * AI Gateway はモックして AI 判定を無効化。
  */
 
-// checkRules のロジックを直接テスト
-function checkRulesMedicated(isMedicated: boolean): 'skip_deploy' | null {
-  if (isMedicated) return 'skip_deploy';
-  return null;
-}
+vi.mock('../../src/lib/ai-gateway', () => ({
+  invoke: vi.fn().mockResolvedValue({
+    isDryRun: false,
+    data: { decision: 'deploy', confidence: 0.5, reason: 'AI判定' },
+    response: { output: '', inputTokens: 0, outputTokens: 0, modelId: 'test', latencyMs: 0 },
+  }),
+}));
 
-function checkRulesSleep(sleepHours: number): 'skip_deploy' | null {
-  if (sleepHours <= 4) return 'skip_deploy';
-  return null;
-}
+import { judge } from '../../src/services/dont-deploy-service';
 
-function checkRulesCondition(conditionScore: number): 'skip_deploy' | null {
-  if (conditionScore <= 2) return 'skip_deploy';
-  return null;
-}
-
-describe('PBT: Don\'t Deploy ルールベース判定', () => {
-  it('服薬あり → 常に Skip Deploy', () => {
+describe('PBT: dont-deploy ルールベース判定（本番コード）', () => {
+  it('服薬あり → 常に skip_deploy + ruleBased=true', () => {
     fc.assert(
-      fc.property(fc.constant(true), (isMedicated) => {
-        expect(checkRulesMedicated(isMedicated)).toBe('skip_deploy');
-      }),
+      fc.property(
+        fc.integer({ min: 1, max: 5 }), // conditionScore（無関係な値）
+        async (_score) => {
+          const result = await judge({ isMedicated: true }, 'user', 'ja');
+          if (!('_dryRun' in result)) {
+            expect(result.decision).toBe('skip_deploy');
+            expect(result.ruleBased).toBe(true);
+          }
+        },
+      ),
     );
   });
 
-  it('服薬なし → ルールベースでは確定しない', () => {
-    expect(checkRulesMedicated(false)).toBeNull();
-  });
-
-  it('睡眠 4時間以下 → 常に Skip Deploy', () => {
+  it('睡眠 0〜4 時間 → 常に skip_deploy + ruleBased=true', () => {
     fc.assert(
       fc.property(
         fc.integer({ min: 0, max: 4 }),
-        (sleepHours) => {
-          expect(checkRulesSleep(sleepHours)).toBe('skip_deploy');
+        async (sleepHours) => {
+          const result = await judge({ sleepHours, isMedicated: false }, 'user', 'ja');
+          if (!('_dryRun' in result)) {
+            expect(result.decision).toBe('skip_deploy');
+            expect(result.ruleBased).toBe(true);
+          }
         },
       ),
     );
   });
 
-  it('睡眠 5時間以上 → ルールベースでは確定しない', () => {
-    fc.assert(
-      fc.property(
-        fc.integer({ min: 5, max: 12 }),
-        (sleepHours) => {
-          expect(checkRulesSleep(sleepHours)).toBeNull();
-        },
-      ),
-    );
-  });
-
-  it('体調スコア 2以下 → 常に Skip Deploy', () => {
+  it('体調 1〜2 → 常に skip_deploy + ruleBased=true', () => {
     fc.assert(
       fc.property(
         fc.integer({ min: 1, max: 2 }),
-        (score) => {
-          expect(checkRulesCondition(score)).toBe('skip_deploy');
+        async (conditionScore) => {
+          const result = await judge({ conditionScore, isMedicated: false, sleepHours: 8 }, 'user', 'ja');
+          if (!('_dryRun' in result)) {
+            expect(result.decision).toBe('skip_deploy');
+            expect(result.ruleBased).toBe(true);
+          }
         },
       ),
     );
   });
 
-  it('体調スコア 3以上 → ルールベースでは確定しない', () => {
+  it('体調良好 + 睡眠十分 + 服薬なし → ruleBased=false（AI 判定へ）', () => {
     fc.assert(
       fc.property(
         fc.integer({ min: 3, max: 5 }),
-        (score) => {
-          expect(checkRulesCondition(score)).toBeNull();
+        fc.integer({ min: 5, max: 10 }),
+        async (conditionScore, sleepHours) => {
+          const result = await judge(
+            { conditionScore, sleepHours, isMedicated: false },
+            'user', 'ja',
+          );
+          if (!('_dryRun' in result)) {
+            expect(result.ruleBased).toBe(false); // AI 判定
+          }
         },
       ),
     );

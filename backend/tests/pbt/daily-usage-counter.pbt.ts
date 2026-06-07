@@ -1,41 +1,62 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fc from 'fast-check';
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 
 /**
- * PBT: 推薦回数カウンター
- * Invariant: 0〜3 の範囲、3超過で拒否
+ * PBT: 推薦回数カウンター（本番コード checkDailyUsage を呼び出し）
+ * Invariant: 3超過で RateLimitError
  */
-const DAILY_LIMIT = 3;
 
-function shouldReject(currentCount: number): boolean {
-  return currentCount >= DAILY_LIMIT;
-}
+// DynamoDB モック
+const mockSend = vi.fn();
+vi.mock('@aws-sdk/client-dynamodb', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@aws-sdk/client-dynamodb')>();
+  return { ...actual, DynamoDBClient: vi.fn(() => ({})) };
+});
+vi.mock('@aws-sdk/lib-dynamodb', () => ({
+  DynamoDBDocumentClient: { from: vi.fn(() => ({ send: mockSend })) },
+  UpdateCommand: vi.fn((params) => ({ input: params })),
+}));
+vi.mock('@aws-lambda-powertools/logger', () => ({
+  Logger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn() })),
+}));
+vi.mock('@aws-lambda-powertools/metrics', () => ({
+  Metrics: vi.fn(() => ({ addMetric: vi.fn(), addDimension: vi.fn(), publishStoredMetrics: vi.fn() })),
+  MetricUnit: { Count: 'Count', Milliseconds: 'Milliseconds', NoUnit: 'NoUnit' },
+}));
 
-describe('PBT: 推薦回数カウンター', () => {
-  it('上限未満のカウントでは常に許可される', () => {
+import { checkDailyUsage } from '../../src/lib/ai-gateway/cost-controller';
+import { RateLimitError } from '../../src/lib/errors';
+
+describe('PBT: checkDailyUsage（本番コード）', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    delete process.env.AI_GATEWAY_DRY_RUN;
+  });
+
+  it('DynamoDB が成功を返す場合は常にエラーなし', () => {
     fc.assert(
       fc.property(
-        fc.integer({ min: 0, max: DAILY_LIMIT - 1 }),
-        (count) => {
-          expect(shouldReject(count)).toBe(false);
+        fc.string({ minLength: 1, maxLength: 36 }), // userId
+        async (userId) => {
+          mockSend.mockResolvedValueOnce({});
+          await expect(checkDailyUsage(userId)).resolves.toBeUndefined();
         },
       ),
     );
   });
 
-  it('上限以上のカウントでは常に拒否される', () => {
+  it('ConditionalCheckFailedException は常に RateLimitError', () => {
     fc.assert(
       fc.property(
-        fc.integer({ min: DAILY_LIMIT, max: 100 }),
-        (count) => {
-          expect(shouldReject(count)).toBe(true);
+        fc.string({ minLength: 1, maxLength: 36 }),
+        async (userId) => {
+          mockSend.mockRejectedValueOnce(
+            new ConditionalCheckFailedException({ message: 'failed', $metadata: {} }),
+          );
+          await expect(checkDailyUsage(userId)).rejects.toThrow(RateLimitError);
         },
       ),
     );
-  });
-
-  it('境界値: 2 は許可、3 は拒否', () => {
-    expect(shouldReject(2)).toBe(false);
-    expect(shouldReject(3)).toBe(true);
   });
 });
