@@ -39,6 +39,12 @@ await build({
     '@aws-lambda-powertools/*',
     '@aws-sdk/*',
   ],
+  loader: {
+    // プロンプト本文をバンドルに文字列として埋め込む。
+    // 実行時 readFileSync だと ESM で __dirname が使えず、
+    // zip にも .txt が含まれないため import 方式にしている。
+    '.txt': 'text',
+  },
   banner: {
     // ESM の require 互換性対応
     js: "import { createRequire } from 'module'; const require = createRequire(import.meta.url);",

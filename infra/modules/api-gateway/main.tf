@@ -30,6 +30,9 @@ resource "aws_api_gateway_stage" "main" {
   rest_api_id   = aws_api_gateway_rest_api.main.id
   stage_name    = var.env
 
+  # アクセスログ有効化にはアカウントレベルの CloudWatch ロール登録が先に必要
+  depends_on = [aws_api_gateway_account.main]
+
   # X-Ray トレーシング
   xray_tracing_enabled = true
 

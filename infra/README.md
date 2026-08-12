@@ -108,7 +108,24 @@ dev で実際に Bedrock を呼ぶ場合は `AI_GATEWAY_DRY_RUN` を `false` に
 
 ---
 
+## プロンプトテンプレートの投入
+
+`deploy-backend.sh` が Lambda コード配布の直後に `aws lambda invoke` でシーダーを起動する。
+
+当初は Terraform の CloudFormation Custom Resource で apply 中に投入する設計だったが、
+apply 時点の Lambda にはプレースホルダーコードしか載っておらず応答プロトコルを満たせないため、
+Custom Resource が1時間ハングして失敗する。この方式は採用していない。
+
+テンプレート定義（`prompt_templates`）とバージョン（`prompt_template_version`）は
+Terraform から Lambda の環境変数として渡している。プロンプト本文は esbuild の
+text loader でバンドルに埋め込まれる（実行時 `readFileSync` は使わない）。
+
 ## 既知の注意点
+
+- **Unit 1 の Lambda 関数10本が Terraform に未定義** — `sdlc-signup-handler` 等の認証系ハンドラーは
+  IAM ロールとロググループだけが定義されており、`aws_lambda_function` リソースが存在しない。
+  そのため `deploy-backend.sh` は該当分をスキップし、最後に一覧を出して非ゼロ終了する。
+  Unit 1 側の対応が必要（API Gateway の認証系エンドポイントも同様に未定義）
 
 - **CloudWatch アラームの dimensions 未指定** — Powertools Metrics は `service` ディメンションを自動付与するため、現状のアラームがメトリクスに一致しない可能性がある。デプロイ後にコンソールで実ディメンションを確認して追加すること
 - **`ErrorCount` の名前空間** — `create-handler.ts` が `SDLC/Foundation` に送出しているため、`SDLC/AIGateway` を見ている `ai_error_count` アラームは現状無反応。Unit 6 でメトリクス名前空間を整理する予定

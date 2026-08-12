@@ -20,6 +20,8 @@ module "api_gateway" {
   allowed_origin        = "http://localhost:5173"
   # Unit 2: AI Core
   lambda_invoke_arns = module.lambda_base.ai_lambda_invoke_arns
+  # アカウント×リージョンで1つのシングルトン設定。dev のみが管理する
+  manage_account_setting = true
 }
 
 module "s3_cloudfront" {

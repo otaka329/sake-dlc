@@ -18,3 +18,9 @@ variable "lambda_invoke_arns" {
   type        = map(string)
   default     = {}
 }
+
+variable "manage_account_setting" {
+  description = "API Gateway のアカウントレベル CloudWatch ロールをこの環境で管理するか（アカウント×リージョンで1つのみ。dev のみ true）"
+  type        = bool
+  default     = false
+}

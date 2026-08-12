@@ -77,14 +77,25 @@ resource "aws_s3_bucket_lifecycle_configuration" "logs" {
     id     = "log-lifecycle"
     status = "Enabled"
 
-    transition {
-      days          = 30
-      storage_class = "STANDARD_IA"
+    # ルールには filter か prefix のいずれかが必須（空 filter = 全オブジェクト対象）
+    filter {}
+
+    # Expiration は全 Transition より後でなければならない。
+    # dev は保持30日のため移行を行わず、prod（180日）でのみ段階移行する。
+    dynamic "transition" {
+      for_each = var.log_retention_days > 30 ? [1] : []
+      content {
+        days          = 30
+        storage_class = "STANDARD_IA"
+      }
     }
 
-    transition {
-      days          = 90
-      storage_class = "GLACIER_IR"
+    dynamic "transition" {
+      for_each = var.log_retention_days > 90 ? [1] : []
+      content {
+        days          = 90
+        storage_class = "GLACIER_IR"
+      }
     }
 
     expiration {
@@ -135,13 +146,10 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
       referrer_policy = "strict-origin-when-cross-origin"
       override        = true
     }
-  }
-
-  custom_headers_config {
-    items {
-      header   = "Content-Security-Policy"
-      value    = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://*.amazonaws.com https://*.auth.*.amazoncognito.com"
-      override = true
+    # CSP はセキュリティヘッダー扱いのため custom_headers_config には置けない
+    content_security_policy {
+      content_security_policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://*.amazonaws.com https://*.auth.*.amazoncognito.com"
+      override                = true
     }
   }
 }
