@@ -18,6 +18,8 @@ module "api_gateway" {
   env                   = var.env
   cognito_user_pool_arn = module.cognito.user_pool_arn
   allowed_origin        = "https://CLOUDFRONT_DOMAIN" # デプロイ後に更新
+  # Unit 2: AI Core
+  lambda_invoke_arns = module.lambda_base.ai_lambda_invoke_arns
 }
 
 module "s3_cloudfront" {
@@ -49,14 +51,6 @@ module "lambda_base" {
     { templateId = "alternative-proposal", modelId = "anthropic.claude-3-haiku-20240307-v1:0", maxTokens = 500, temperature = 0.7, variables = ["season", "mood", "locale"] },
     { templateId = "meta-response", modelId = "anthropic.claude-3-haiku-20240307-v1:0", maxTokens = 300, temperature = 0.5, variables = ["userMessage", "locale"] },
   ]
-}
-
-module "api_gateway" {
-  source                = "../../modules/api-gateway"
-  env                   = var.env
-  cognito_user_pool_arn = module.cognito.user_pool_arn
-  allowed_origin        = "https://CLOUDFRONT_DOMAIN"
-  lambda_invoke_arns    = module.lambda_base.ai_lambda_invoke_arns
 }
 
 module "monitoring" {
