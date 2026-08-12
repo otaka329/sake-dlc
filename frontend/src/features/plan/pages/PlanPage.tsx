@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PlanProvider, usePlan } from '@/contexts/PlanContext';
+import { usePlan } from '@/contexts/PlanContext';
 import { ConditionCard } from '../components/ConditionCard';
 import { ScheduleCard } from '../components/ScheduleCard';
 import { DishCard } from '../components/DishCard';
@@ -51,9 +51,5 @@ function PlanPageContent() {
 }
 
 export function PlanPage() {
-  return (
-    <PlanProvider>
-      <PlanPageContent />
-    </PlanProvider>
-  );
+  return <PlanPageContent />;
 }

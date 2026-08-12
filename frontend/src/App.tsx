@@ -4,6 +4,7 @@ import { AppShell } from './features/shared/components/AppShell';
 import { ProtectedRoute } from './features/shared/components/ProtectedRoute';
 import { ErrorBoundary } from './features/shared/components/ErrorBoundary';
 import { LoadingSpinner } from './features/shared/components/LoadingSpinner';
+import { PlanProvider } from './contexts/PlanContext';
 
 // 認証ページ（初期ロード）
 import { LoginPage } from './features/auth/pages/LoginPage';
@@ -19,13 +20,20 @@ const MfaChallengePage = lazy(() =>
 const SettingsPage = lazy(() =>
   import('./features/auth/pages/SettingsPage').then((m) => ({ default: m.SettingsPage })),
 );
+const PlanPage = lazy(() =>
+  import('./features/plan/pages/PlanPage').then((m) => ({ default: m.PlanPage })),
+);
+const BuildPage = lazy(() =>
+  import('./features/build/pages/BuildPage').then((m) => ({ default: m.BuildPage })),
+);
 const PlaceholderPage = lazy(() =>
   import('./features/shared/pages/PlaceholderPage').then((m) => ({ default: m.PlaceholderPage })),
 );
 
 /**
  * アプリケーションルーティング
- * 非認証ルートは PlaceholderPage にマッピング（Unit 2〜4 で各 Feature ページに差し替え）
+ * Unit 2: / → PlanPage、/build → BuildPage に差し替え
+ * PlanProvider を AppShell の親に配置（Plan → Build 遷移時に入力データを維持するため）
  */
 export function App() {
   return (
@@ -39,10 +47,10 @@ export function App() {
 
           {/* 認証必須ルート */}
           <Route element={<ProtectedRoute />}>
-            <Route element={<AppShell />}>
+            <Route element={<PlanProvider><AppShell /></PlanProvider>}>
               <Route path="/onboarding" element={<OnboardingPage />} />
-              <Route path="/" element={<PlaceholderPage />} />
-              <Route path="/build" element={<PlaceholderPage />} />
+              <Route path="/" element={<PlanPage />} />
+              <Route path="/build" element={<BuildPage />} />
               <Route path="/test" element={<PlaceholderPage />} />
               <Route path="/deploy" element={<PlaceholderPage />} />
               <Route path="/monitor" element={<PlaceholderPage />} />

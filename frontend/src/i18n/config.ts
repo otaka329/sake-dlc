@@ -6,9 +6,13 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import jaCommon from './locales/ja/common.json';
 import jaAuth from './locales/ja/auth.json';
 import jaErrors from './locales/ja/errors.json';
+import jaPlan from './locales/ja/plan.json';
+import jaBuild from './locales/ja/build.json';
 import enCommon from './locales/en/common.json';
 import enAuth from './locales/en/auth.json';
 import enErrors from './locales/en/errors.json';
+import enPlan from './locales/en/plan.json';
+import enBuild from './locales/en/build.json';
 
 /**
  * react-i18next 初期化
@@ -20,12 +24,12 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ja: { common: jaCommon, auth: jaAuth, errors: jaErrors },
-      en: { common: enCommon, auth: enAuth, errors: enErrors },
+      ja: { common: jaCommon, auth: jaAuth, errors: jaErrors, plan: jaPlan, build: jaBuild },
+      en: { common: enCommon, auth: enAuth, errors: enErrors, plan: enPlan, build: enBuild },
     },
     fallbackLng: 'ja',
     defaultNS: 'common',
-    ns: ['common', 'auth', 'errors'],
+    ns: ['common', 'auth', 'errors', 'plan', 'build'],
     interpolation: {
       escapeValue: false, // React が XSS 対策済み
     },

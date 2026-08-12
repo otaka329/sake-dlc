@@ -1,0 +1,33 @@
+{
+  "title": "Plan",
+  "subtitle": "今日の体調・予定・料理を入力して、最適な一杯を計画しましょう。",
+  "condition": {
+    "title": "体調",
+    "score": "体調スコア",
+    "medicated": "服薬中",
+    "sleep": "睡眠時間",
+    "hours": "時間"
+  },
+  "schedule": {
+    "title": "翌日の予定",
+    "importance": "予定の重要度",
+    "earliestStart": "最も早い予定",
+    "summary": "予定の概要",
+    "summaryPlaceholder": "例: 朝9時から会議"
+  },
+  "dish": {
+    "title": "料理",
+    "placeholder": "料理名を入力（例: 刺身）",
+    "add": "追加"
+  },
+  "mood": {
+    "title": "気分",
+    "placeholder": "今日の気分は？"
+  },
+  "advice": {
+    "loading": "判定中...",
+    "deploy": "今日は飲みましょう",
+    "skipDeploy": "今日はお休みしましょう",
+    "alternatives": "代わりにこちらはいかがですか？"
+  }
+}

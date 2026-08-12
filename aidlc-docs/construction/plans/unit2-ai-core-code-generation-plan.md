@@ -120,10 +120,10 @@
   - frontend/src/features/build/hooks/useMetaResponse.ts（POST /meta-response 呼び出し）
   - frontend/src/features/build/api/build-api.ts（apiClient ラッパー: postRecommend, postMetaResponse）
 
-- [ ] Step 13: App.tsx ルーティング差し替え
+- [x] Step 13: App.tsx ルーティング差し替え
   - frontend/src/App.tsx 更新: `/` → PlanPage、`/build` → BuildPage に PlaceholderPage から差し替え
 
-- [ ] Step 14: i18n namespace 追加（plan, build）
+- [x] Step 14: i18n namespace 追加（plan, build）
   - frontend/src/i18n/locales/ja/plan.json
   - frontend/src/i18n/locales/en/plan.json
   - frontend/src/i18n/locales/ja/build.json
