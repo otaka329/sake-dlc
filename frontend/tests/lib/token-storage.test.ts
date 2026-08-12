@@ -1,11 +1,24 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-// ky のモックは複雑なため、token-storage のロジックをテスト
+// jsdom 環境の localStorage をモック（Node 22 組み込み localStorage との干渉回避）
+const store: Record<string, string> = {};
+const mockLocalStorage = {
+  getItem: vi.fn((key: string) => store[key] ?? null),
+  setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
+  removeItem: vi.fn((key: string) => { delete store[key]; }),
+  clear: vi.fn(() => { Object.keys(store).forEach((k) => delete store[k]); }),
+  get length() { return Object.keys(store).length; },
+  key: vi.fn((i: number) => Object.keys(store)[i] ?? null),
+};
+
+Object.defineProperty(globalThis, 'localStorage', { value: mockLocalStorage, writable: true });
+
 import { getTokens, setTokens, clearTokens } from '../../src/lib/token-storage';
 
 describe('token-storage', () => {
   beforeEach(() => {
-    localStorage.clear();
+    mockLocalStorage.clear();
+    vi.clearAllMocks();
   });
 
   it('setTokens → getTokens でトークンを保存・取得できる', () => {
@@ -18,7 +31,6 @@ describe('token-storage', () => {
 
     setTokens(tokens);
     const retrieved = getTokens();
-
     expect(retrieved).toEqual(tokens);
   });
 
@@ -39,7 +51,7 @@ describe('token-storage', () => {
   });
 
   it('不正な JSON が保存されている場合は null を返す', () => {
-    localStorage.setItem('sdlc-tokens', 'invalid-json');
+    mockLocalStorage.setItem('sdlc-tokens', 'invalid-json');
     expect(getTokens()).toBeNull();
   });
 });

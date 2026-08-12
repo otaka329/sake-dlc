@@ -94,12 +94,12 @@
   - backend/tests/pbt/recommendation-count.pbt.ts（Invariant: recommendations は 3〜5件）
   - backend/tests/pbt/cost-metrics-non-negative.pbt.ts（Invariant: inputTokens/outputTokens/latencyMs ≥ 0）
 
-- [ ] Step 10: バックエンドコードサマリー
+- [x] Step 10: バックエンドコードサマリー
   - aidlc-docs/construction/unit2-ai-core/code/backend-summary.md
 
 ### Phase C: フロントエンド
 
-- [ ] Step 11: PlanContext + PlanPage + API 統合（US-04, US-06）
+- [x] Step 11: PlanContext + PlanPage + API 統合（US-04, US-06）
   - frontend/src/contexts/PlanContext.tsx（PlanState + useReducer + デバウンス dont-deploy 自動呼び出し）
   - frontend/src/features/plan/pages/PlanPage.tsx
   - frontend/src/features/plan/components/ConditionCard.tsx
@@ -111,7 +111,7 @@
   - frontend/src/features/plan/hooks/useDontDeploy.ts（1秒デバウンス + POST /dont-deploy 呼び出し）
   - frontend/src/features/plan/api/plan-api.ts（apiClient ラッパー: postDontDeploy）
 
-- [ ] Step 12: BuildPage + API 統合（US-08, US-09, US-10, US-11, US-16）
+- [x] Step 12: BuildPage + API 統合（US-08, US-09, US-10, US-11, US-16）
   - frontend/src/features/build/pages/BuildPage.tsx
   - frontend/src/features/build/components/RecommendationList.tsx
   - frontend/src/features/build/components/RecommendationCard.tsx（Layer別表示 + カスタマイズ）
