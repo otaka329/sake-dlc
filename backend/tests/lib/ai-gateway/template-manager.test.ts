@@ -26,6 +26,25 @@ describe('TemplateManager - substituteVariables', () => {
     expect(result).not.toContain('{{');
   });
 
+  it('ユーザー入力に $& が含まれても正しく置換される（P1 回帰テスト）', () => {
+    const template = '気分: {{mood}}';
+    const result = substituteVariables(template, { mood: '$&' });
+    expect(result).toBe('気分: $&');
+  });
+
+  it('ユーザー入力に $` が含まれてもテンプレート本文が漏洩しない（P1 回帰テスト）', () => {
+    const template = '秘密のプロンプト。入力: {{mood}}';
+    const result = substituteVariables(template, { mood: '$`' });
+    expect(result).toBe('秘密のプロンプト。入力: $`');
+    expect(result.split('秘密').length).toBe(2); // 1回だけ出現
+  });
+
+  it('ユーザー入力に $$ が含まれても $ に化けない（P1 回帰テスト）', () => {
+    const template = '気分: {{mood}}';
+    const result = substituteVariables(template, { mood: '$$' });
+    expect(result).toBe('気分: $$');
+  });
+
   it('全変数が置換されると正常完了', () => {
     const template = '{{a}} {{b}} {{c}}';
     const result = substituteVariables(template, { a: '1', b: '2', c: '3' });

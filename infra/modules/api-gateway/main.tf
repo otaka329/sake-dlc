@@ -190,6 +190,12 @@ resource "aws_api_gateway_deployment" "main" {
       aws_api_gateway_gateway_response.integration_timeout,
       aws_api_gateway_gateway_response.default_4xx,
       aws_api_gateway_gateway_response.default_5xx,
+      aws_api_gateway_resource.recommend,
+      aws_api_gateway_resource.dont_deploy,
+      aws_api_gateway_resource.meta_response,
+      aws_api_gateway_integration.recommend_post,
+      aws_api_gateway_integration.dont_deploy_post,
+      aws_api_gateway_integration.meta_response_post,
     ]))
   }
 

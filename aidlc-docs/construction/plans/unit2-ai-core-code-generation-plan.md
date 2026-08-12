@@ -129,7 +129,7 @@
   - frontend/src/i18n/locales/ja/build.json
   - frontend/src/i18n/locales/en/build.json
 
-- [ ] Step 15: フロントエンドユニットテスト
+- [x] Step 15: フロントエンドユニットテスト
   - frontend/tests/contexts/PlanContext.test.tsx
   - frontend/tests/features/plan/PlanPage.test.tsx
   - frontend/tests/features/plan/DishCard.test.tsx
@@ -138,26 +138,28 @@
   - frontend/tests/features/build/RecommendationCard.test.tsx
   - frontend/tests/features/build/MetaResponseDialog.test.tsx
 
-- [ ] Step 16: フロントエンド PBT
+- [x] Step 16: フロントエンド PBT
   - frontend/tests/pbt/amount-clamp.pbt.ts（Invariant: 適量は 30〜300ml 範囲。BR-11-02）
   - frontend/tests/pbt/disclosure-recommendation-fields.pbt.ts（Invariant: disclosureLevel → 表示フィールドの整合性）
 
-- [ ] Step 17: フロントエンドコードサマリー
+- [x] Step 17: フロントエンドコードサマリー
   - aidlc-docs/construction/unit2-ai-core/code/frontend-summary.md
 
 ### Phase D: インフラ + デプロイ
 
-- [ ] Step 18: Terraform 追加（既存モジュール拡張）
+- [x] Step 18: Terraform 追加（既存モジュール拡張）— C1/C2/C3/H1-H4/M1-M3 対応済み
   - infra/modules/lambda-base/ai-role.tf（sdlc-ai-role + sdlc-prompt-seeder-role）
-  - infra/modules/lambda-base/prompt-seed.tf（Custom Resource）
+  - infra/modules/lambda-base/prompt-seed.tf（Custom Resource + data.archive_file placeholder）
+  - infra/modules/lambda-base/ai-lambdas.tf（Lambda 3本 for_each）
   - infra/modules/api-gateway/ai-endpoints.tf（3エンドポイント追加）
-  - infra/modules/monitoring/ai-alarms.tf（5アラーム追加）
-  - infra/environments/dev/main.tf 更新（prompt_templates, prompt_template_version 変数）
+  - infra/modules/monitoring/ai-alarms.tf（5アラーム: extended_statistic p95, 絶対件数, treat_missing_data）
+  - infra/environments/dev/main.tf 更新（新変数 + api_gateway lambda_invoke_arns 配線）
   - infra/environments/prod/main.tf 更新（同上）
-  - ⚠️ esbuild.config.mjs（実ファイル名。Unit 1 計画では esbuild.config.ts と記載されているが、実装は .mjs）: handlers/ai/ 配下は自動 glob で検出（Unit 1 で構築済みの自動検出ロジックがそのまま適用）
+  - infra/modules/lambda-base/variables.tf（sakenowa_cache_table_arn, app_data_table_name, prompt_template_version, prompt_templates）
+  - ⚠️ esbuild.config.mjs: handlers/ai/ 配下は自動 glob で検出
 
-- [ ] Step 19: デプロイスクリプト更新 + ドキュメント
-  - scripts/deploy-backend.sh 更新（Unit 2 Lambda 4本追加）
+- [x] Step 19: デプロイスクリプト更新 + ドキュメント — C4 対応済み（zip化+正しいパス導出に全面書き直し）
+  - scripts/deploy-backend.sh（deploy_lambda 関数: mjs → index.mjs コピー → zip → update-function-code）
   - backend/README.md 更新（Unit 2 API エンドポイント追加）
 
 ---
@@ -182,13 +184,13 @@ export type DishCategoryWithOther = DishCategory | 'other';
 
 | ストーリー | 実装ステップ | 状態 |
 |---|---|---|
-| US-04 | Step 1, 11 | [ ] |
-| US-06 | Step 1, 11 | [ ] |
-| US-08 | Step 1-4, 8-9, 12 | [ ] |
-| US-09 | Step 1-3, 5, 8-9, 11-12 | [ ] |
-| US-10 | Step 1, 3, 5, 11 | [ ] |
-| US-11 | Step 1, 4, 12 | [ ] |
-| US-16 | Step 1, 3, 6, 8, 12 | [ ] |
+| US-04 | Step 1, 11 | [x] |
+| US-06 | Step 1, 11 | [x] |
+| US-08 | Step 1-4, 8-9, 12 | [x] |
+| US-09 | Step 1-3, 5, 8-9, 11-12 | [x] |
+| US-10 | Step 1, 3, 5, 11 | [x] |
+| US-11 | Step 1, 4, 12 | [x] |
+| US-16 | Step 1, 3, 6, 8, 12 | [x] |
 
 ---
 

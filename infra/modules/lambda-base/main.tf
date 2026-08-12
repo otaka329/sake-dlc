@@ -71,11 +71,11 @@ resource "aws_iam_role_policy_attachment" "auth_xray" {
 
 # --- KMS キー: MFA リカバリーコード HMAC ---
 resource "aws_kms_key" "recovery_codes" {
-  description             = "SDLC MFA リカバリーコード HMAC-SHA-256 鍵 (${var.env})"
-  key_usage               = "GENERATE_VERIFY_MAC"
+  description              = "SDLC MFA リカバリーコード HMAC-SHA-256 鍵 (${var.env})"
+  key_usage                = "GENERATE_VERIFY_MAC"
   customer_master_key_spec = "HMAC_256"
-  deletion_window_in_days = 30
-  enable_key_rotation     = false # HMAC キーはローテーション非対応
+  deletion_window_in_days  = 30
+  enable_key_rotation      = false # HMAC キーはローテーション非対応
 
   tags = {
     Project     = "sdlc"

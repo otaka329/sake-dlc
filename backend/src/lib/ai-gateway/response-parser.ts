@@ -1,7 +1,9 @@
 import type { ZodSchema } from 'zod';
 import { createLogger } from '../logger';
+import { createMetrics, MetricUnit } from '../metrics';
 
 const logger = createLogger('response-parser');
+const metrics = createMetrics('response-parser', 'SDLC/AIGateway');
 
 /**
  * Tool Use 出力の Zod バリデーション + リトライ判定
@@ -30,6 +32,10 @@ export function parseToolUseOutput<T>(
     .join('; ');
 
   logger.warn('Tool Use 出力パース失敗', { errors: errorMessage });
+
+  // H3: ParseFailureCount メトリクス送出
+  metrics.addMetric('ParseFailureCount', MetricUnit.Count, 1);
+  metrics.publishStoredMetrics();
 
   return { success: false, error: errorMessage };
 }

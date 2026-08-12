@@ -72,7 +72,8 @@ export function substituteVariables(
     let replacement = typeof value === 'string' ? value : JSON.stringify(value);
     // ユーザー入力から {{...}} パターンをエスケープ（未置換検出の誤発火防止）
     replacement = replacement.replace(/\{\{/g, '{ {').replace(/\}\}/g, '} }');
-    result = result.replaceAll(placeholder, replacement);
+    // $ パターンの解釈を防止するため関数形式で置換
+    result = result.replaceAll(placeholder, () => replacement);
   }
 
   // 未置換プレースホルダー検出（BR-13-05）

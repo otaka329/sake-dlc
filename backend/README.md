@@ -2,8 +2,9 @@
 
 AWS Lambda + DynamoDB によるサーバーレスバックエンド。
 
-## API エンドポイント（Unit 1）
+## API エンドポイント
 
+### Unit 1: Auth
 | メソッド | パス | 説明 |
 |---|---|---|
 | POST | /signup | プロファイル初期設定 |
@@ -14,6 +15,13 @@ AWS Lambda + DynamoDB によるサーバーレスバックエンド。
 | DELETE | /mfa | MFA 無効化 |
 | POST | /mfa/recovery-codes | リカバリーコード発行 |
 | PUT | /disclosure-level | 開示レイヤー更新 |
+
+### Unit 2: AI Core
+| メソッド | パス | 説明 |
+|---|---|---|
+| POST | /recommend | AI 日本酒推薦（3回/日制限） |
+| POST | /dont-deploy | Don't Deploy Today 判定 |
+| POST | /meta-response | メタ応答（「飲むべき？」） |
 
 ## ローカル開発
 
