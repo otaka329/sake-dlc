@@ -20,6 +20,10 @@ terraform {
 provider "aws" {
   region = "ap-northeast-1"
 
+  # 誤ったアカウントへの適用を防ぐガード。
+  # 認証情報が別アカウントを指している場合、plan の段階で失敗する。
+  allowed_account_ids = ["441713519216"]
+
   default_tags {
     tags = {
       Project     = "sdlc"

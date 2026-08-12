@@ -8,6 +8,9 @@ set -euo pipefail
 ENV="${1:?環境名を指定してください（dev / prod）}"
 BUCKET="sdlc-frontend-${ENV}"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/lib/check-aws-account.sh"
+
 echo "=== フロントエンドビルド ==="
 cd frontend
 npm ci
