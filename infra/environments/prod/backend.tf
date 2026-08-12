@@ -2,7 +2,8 @@ terraform {
   required_version = ">= 1.9.0"
 
   backend "s3" {
-    bucket         = "sdlc-terraform-state"
+    # S3 の名前空間は全世界共有のため、アカウント ID を付与して一意化
+    bucket         = "sdlc-terraform-state-441713519216"
     key            = "prod/terraform.tfstate"
     region         = "ap-northeast-1"
     dynamodb_table = "sdlc-terraform-locks"

@@ -164,3 +164,9 @@ frontend/dist/
 
 # テストカバレッジ
 coverage/
+
+# Lambda Layer ビルド生成物（scripts/build-layer.sh で生成）
+infra/modules/lambda-base/layers/
+
+# Terraform の archive_file が生成するプレースホルダー
+infra/modules/lambda-base/placeholder.zip
