@@ -1,0 +1,33 @@
+{
+  "title": "Plan",
+  "subtitle": "Enter your condition, schedule, and dishes to plan the perfect drink.",
+  "condition": {
+    "title": "Condition",
+    "score": "Condition Score",
+    "medicated": "Taking medication",
+    "sleep": "Sleep hours",
+    "hours": "hours"
+  },
+  "schedule": {
+    "title": "Tomorrow's Schedule",
+    "importance": "Schedule Importance",
+    "earliestStart": "Earliest appointment",
+    "summary": "Schedule summary",
+    "summaryPlaceholder": "e.g., 9am meeting"
+  },
+  "dish": {
+    "title": "Dishes",
+    "placeholder": "Enter dish name (e.g., sashimi)",
+    "add": "Add"
+  },
+  "mood": {
+    "title": "Mood",
+    "placeholder": "How are you feeling?"
+  },
+  "advice": {
+    "loading": "Checking...",
+    "deploy": "Enjoy a drink today",
+    "skipDeploy": "Let's take a break today",
+    "alternatives": "How about these instead?"
+  }
+}

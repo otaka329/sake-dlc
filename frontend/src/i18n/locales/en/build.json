@@ -1,0 +1,30 @@
+{
+  "title": "Build",
+  "recommend": "Get Recommendations",
+  "loading": "Recommending...",
+  "metaQuestion": "Should I drink?",
+  "list": {
+    "title": "Recommended Sake",
+    "attribution": "Data provided by: Sakenowa (https://sakenowa.com)"
+  },
+  "card": {
+    "matchScore": "Match",
+    "flavor": "Flavor",
+    "temperature": "Temperature",
+    "amount": "Amount"
+  },
+  "temp": {
+    "reishu": "Chilled",
+    "jouon": "Room temp",
+    "nurukan": "Warm",
+    "atsukan": "Hot"
+  },
+  "meta": {
+    "dismiss": "Close",
+    "action": {
+      "pause": "Take a moment to breathe",
+      "hydrate": "Have a glass of water first",
+      "reflect": "Take a moment to reflect"
+    }
+  }
+}

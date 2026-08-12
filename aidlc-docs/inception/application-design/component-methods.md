@@ -8,9 +8,9 @@
 
 | メソッド | 入力 | 出力 | 概要 |
 |---|---|---|---|
-| `invokeModel(templateId, variables, options?)` | テンプレートID, 変数マップ, オプション(vision等) | AIレスポンス(テキスト) | プロンプトテンプレートを読み込み、変数を置換してBedrock Claudeを呼び出す |
-| `invokeVisionModel(templateId, variables, imageBase64)` | テンプレートID, 変数マップ, 画像Base64 | AIレスポンス(テキスト) | 画像付きでBedrock Claude Visionを呼び出す |
-| `getTemplate(templateId)` | テンプレートID | プロンプトテンプレート文字列 | S3からプロンプトテンプレートを取得（キャッシュ付き） |
+| `invokeModel(templateId, variables, options?)` | テンプレートID, 変数マップ, オプション(disclosureLevel等) | AIGatewayResponse(output, inputTokens, outputTokens, modelId, latencyMs) | DynamoDB からテンプレート取得（最新バージョン）、変数置換、テンプレートの modelId で Bedrock 呼び出し、コスト計装 |
+| `invokeVisionModel(templateId, variables, imageBase64)` | テンプレートID, 変数マップ, 画像Base64 | AIGatewayResponse | 画像付きでBedrock Claude Visionを呼び出す（テンプレートの modelId を使用） |
+| `getTemplate(templateId)` | テンプレートID | PromptTemplate | DynamoDB AppData テーブル（PK: SYSTEM, SK: PROMPT#{templateId}#v{version}）から最新バージョンを取得。取得失敗時は InternalError（Fail-closed） |
 
 ---
 

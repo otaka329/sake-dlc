@@ -12,3 +12,8 @@ output "authorizer_id" {
   description = "Cognito JWT Authorizer ID（リソース定義時に参照）"
   value       = aws_api_gateway_authorizer.cognito.id
 }
+
+output "rest_api_execution_arn" {
+  description = "API Gateway execution ARN（Lambda permission 用）"
+  value       = aws_api_gateway_rest_api.main.execution_arn
+}

@@ -115,13 +115,16 @@ import { Metrics } from '@aws-lambda-powertools/metrics';
 +------------------------------------------------------------------+
 | AppData テーブル                                                  |
 |                                                                  |
-| PK: userId (string)                                              |
+| PK: userId (string) または "SYSTEM"（システムスコープ）          |
 | SK: dataType (string)                                            |
 |                                                                  |
 | エンティティパターン:                                             |
-|   SK = "NOTIFICATION"       -> 通知設定                          |
-|   SK = "SETTING#{key}"      -> アプリ設定                        |
-|   SK = "RATELIMIT#{window}" -> レート制限カウンター              |
+|   ユーザースコープ (PK: userId):                                 |
+|     SK = "NOTIFICATION"       -> 通知設定                        |
+|     SK = "SETTING#{key}"      -> アプリ設定                      |
+|     SK = "RATELIMIT#{ts}"     -> レート制限タイムスタンプ        |
+|   システムスコープ (PK: "SYSTEM"):                               |
+|     SK = "PROMPT#{id}#v{ver}" -> プロンプトテンプレート (Unit 2) |
 |                                                                  |
 | 設定:                                                            |
 |   暗号化: AWS managed key                                        |

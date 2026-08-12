@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet } from 'react-router';
 import { TabBar } from './TabBar';
 import { OfflineBanner } from './OfflineBanner';

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { I18nextProvider } from 'react-i18next';
@@ -41,7 +41,7 @@ describe('LoginPage', () => {
     const toggleButton = screen.getByTestId('login-form-toggle-password');
 
     expect(passwordInput).toHaveAttribute('type', 'password');
-    toggleButton.click();
+    act(() => { toggleButton.click(); });
     expect(passwordInput).toHaveAttribute('type', 'text');
   });
 });

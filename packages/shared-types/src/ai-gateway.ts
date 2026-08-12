@@ -8,8 +8,6 @@ import type { DisclosureLevel } from './schemas/user';
 export interface AIGatewayRequest {
   /** プロンプトテンプレート ID */
   templateId: string;
-  /** Bedrock モデル ID */
-  modelId: string;
   /** テンプレート変数 */
   input: Record<string, unknown>;
   /** レスポンスキャッシュ用キー（Unit 2 で実装） */
@@ -25,7 +23,7 @@ export interface AIGatewayResponse {
   inputTokens: number;
   /** 出力トークン数（コスト計装） */
   outputTokens: number;
-  /** 使用モデル ID */
+  /** 使用モデル ID（テンプレートに紐づく modelId） */
   modelId: string;
   /** Bedrock API レイテンシ（ms） */
   latencyMs: number;

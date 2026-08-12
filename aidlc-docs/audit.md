@@ -728,3 +728,205 @@
 **Context**: CONSTRUCTION Phase - Unit 1 Foundation - Build and Test Approved. 引き継ぎ事項記録完了。
 
 ---
+
+## Session End
+**Timestamp**: 2026-05-01T10:05:00Z
+**User Input**: "ありがとうございます。一旦ここまでで終わります。"
+**AI Response**: セッション終了。Unit 1 Foundation 全ステージ完了・承認済み。次回再開ポイント: Unit 2 AI Core。
+**Context**: Session pause. Unit 1 Foundation 完了。Unit 2 AI Core 開始待ち。
+
+---
+
+## Session Resume
+**Timestamp**: 2026-05-02T10:00:00Z
+**User Input**: "作業を再開したいと思っています。feature/unit2-ai-core ブランチで。"
+**AI Response**: セッション再開。feature/unit2-ai-core ブランチ作成・チェックアウト済み。Unit 2 AI Core — Functional Design から開始。
+**Context**: Session continuity - Unit 2 AI Core 開始
+
+---
+
+## Unit 2 AI Core - Functional Design Plan & Questions Created
+**Timestamp**: 2026-05-02T10:01:00Z
+**AI Response**: Functional Design計画と7問の質問を作成。質問内容: (1) AI推薦出力の情報粒度, (2) Don't Deploy判定のAI依存度, (3) Bedrockモデルバリアント選定, (4) プロンプトテンプレート管理方式, (5) Plan画面の入力UIフロー, (6) 推薦結果×Progressive Disclosure連携, (7) 料理サジェストのデータソース
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design Steps 1-4
+
+---
+
+## Unit 2 AI Core - Functional Design Answers
+**Timestamp**: 2026-05-02T10:02:00Z
+**User Input**: ファイルに直接記入。Q1: B（標準粒度）, Q2: C（ハイブリッド判定）, Q3: B（ユースケース別モデル）, Q4: C（DynamoDB保存）, Q5: C（カード式UI）, Q6: C（銘柄カード形式）, Q7: C（ハイブリッドサジェスト）
+**AI Response**: 回答分析完了。矛盾・曖昧点なし。成果物生成に進行。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design Step 5
+
+---
+
+## Unit 2 AI Core - Functional Design Complete
+**Timestamp**: 2026-05-02T10:03:00Z
+**AI Response**: Functional Design成果物を生成。domain-entities.md（10エンティティ: PlanInput, DishInput, Recommendation, TemperatureRecommendation, FlavorScores, RecommendationResponse, DeployAdvice, AlternativeProposal, MetaResponse, PromptTemplate）。business-rules.md（BR-08〜BR-15: 推薦8ルール、判定8ルール、代替提案3ルール、カスタマイズ3ルール、メタ応答4ルール、コスト制御5ルール、テンプレート管理4ルール、サジェスト4ルール）。business-logic-model.md（BL-11〜BL-17: 推薦フロー、判定フロー、代替提案生成、メタ応答、AIGateway本実装、テンプレート取得、matchScore算出）。frontend-components.md（FE-02 PlanFeature: カード式UI 4カード + DeployAdvice表示、FE-03 BuildFeature: 推薦結果リスト + Layer別表示 + カスタマイズ + メタ応答ダイアログ、PlanContext定義、API統合3エンドポイント）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design Step 7
+
+---
+
+## Unit 2 AI Core - Functional Design Change Request (6点修正)
+**Timestamp**: 2026-05-02T10:04:00Z
+**User Input**: "🔴 要対応3件（CM-01 S3→DynamoDB矛盾、AIGateway modelId二重定義、BR-09-04時刻フィールド欠落）+ 🟡 検討推奨3件（SLA p95化、SYSTEM スコープ文書化、スコープ境界注記）"
+**AI Response**: 6点すべて修正。(1) components.md / component-methods.md の CM-01 を DynamoDB ベースに更新。(2) AIGatewayRequest から modelId を除去、テンプレートの modelId で一意化。BL-15、BR-13 を整合更新。(3) PlanInput に tomorrowEarliestStart フィールド追加、BR-09-04 / BL-12 / ScheduleCard / PlanContext を整合更新。(4) BR-08-05 を p95 定義に修正（タイムアウト 10秒は別途）。(5) Unit 1 logical-components.md AppData テーブルに SYSTEM スコープ追記。(6) domain-entities.md にスコープ境界注記テーブル追加（Unit 4/3/5 依存を明記、DishInput.source:image は前方互換）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design Change Request
+
+---
+
+## Unit 2 AI Core - Functional Design Review Verified & Approved
+**Timestamp**: 2026-06-06T00:00:00Z
+**User Input**: "6点すべて修正完了です。" → レビュー再検証依頼 → "お願いします"
+**AI Response**: 6点の修正を参照元（application-design CM-01、Unit 1 logical-components、user-stories）と成果物の突き合わせで再検証。全件クローズを確認。(1) components.md:146-147 / component-methods.md:11-13 が DynamoDB + Fail-closed に更新済みで上流 IF と一致。(2) BR-13-06 追加 + BL-15 整合、AIGatewayRequest に modelId なしで一意化。(3) tomorrowEarliestStart がドメイン→ルール→ロジック→FE→PlanContext/Action 型まで横断一貫。(4) BR-08-05 が p95 + 10秒タイムアウト→INTERNAL_ERROR。(5) logical-components.md:118,126 に PK:"SYSTEM" 追記。(6) domain-entities.md:138-146 にスコープ境界テーブル（Unit 3/4/5 依存、image 前方互換）。Functional Design 成果物を承認品質と判定。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Functional Design 承認
+
+---
+
+## Unit 2 AI Core - NFR Requirements Plan & Questions Created
+**Timestamp**: 2026-05-02T10:05:00Z
+**AI Response**: NFR Requirements計画と5問の質問を作成。質問内容: (1) レスポンスキャッシュ戦略, (2) 月次コスト上限, (3) パース失敗時フォールバック, (4) プロンプトシードデータ投入方法, (5) プライバシー（プロンプト送信データ方針）
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Requirements Steps 1-4
+
+---
+
+## Unit 2 AI Core - NFR Requirements Answers
+**Timestamp**: 2026-05-02T10:06:00Z
+**User Input**: ファイルに直接記入。Q1: C（ハイブリッドキャッシュ）, Q2: A（月額$50以下、5回/日制限）, Q3: A（リトライ最大2回）, Q4: A（Terraform Custom Resource）, Q5: A（全入力そのまま送信）
+**AI Response**: 回答分析完了。矛盾・曖昧点なし。成果物生成完了。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Requirements Step 5-7
+
+---
+
+## Unit 2 AI Core - NFR Requirements Change Request (Critical 1 + Medium 3)
+**Timestamp**: 2026-05-02T10:07:00Z
+**User Input**: "Critical: コスト試算が前提と桁違いに不整合（MAU 500×5回/日→75,000回で$2,137。表記$29は1/73）。Medium: (1) キャッシュキーに disclosureLevel/locale 欠落、(2) リトライとp95 SLAの競合、(3) DailyUsageCount の UserId ディメンション高カーディナリティ。"
+**AI Response**: 4点すべて修正。Critical: DAU/MAU比・利用率・平均回数を明示した現実的前提で再計算。$50達成のため推薦制限を5回→3回/日に厳格化、キャッシュヒット率目標50%に引き上げ。逆算試算を明記（56回/日実AI→$51/月）。Medium: (1) キャッシュキーに disclosureLevel+locale 追加。(2) リトライ対象を「パース失敗+5xxのみ」に限定、トータル時間上限明記（推薦15秒、判定8秒）、Bedrock 429 はリトライしない方針に変更。(3) DailyUsageCount から UserId ディメンション削除（per-user は DynamoDB 管理）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Requirements Change Request
+
+---
+
+## Unit 2 AI Core - NFR Requirements Approved
+**Timestamp**: 2026-05-02T10:08:00Z
+**User Input**: "確認しました。問題ありません。"
+**AI Response**: NFR Requirements 承認。aidlc-state.md を更新し、NFR Design に進行可能。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Requirements Complete - Approved
+
+---
+
+## Unit 2 AI Core - NFR Design Plan & Questions Created
+**Timestamp**: 2026-05-02T10:09:00Z
+**AI Response**: NFR Design計画と4問の質問を作成。質問内容: (1) AIレスポンスJSON構造化パース方式, (2) AIGatewayテスト・デバッグ支援, (3) matchScore算出の分担（AI vs Lambda）, (4) Terraform Custom Resourceライフサイクル管理
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Steps 1-4
+
+---
+
+## Unit 2 AI Core - NFR Design Answers & Complete
+**Timestamp**: 2026-05-02T10:10:00Z
+**User Input**: ファイルに直接記入。Q1: C（Tool Use）, Q2: A（ドライランモード）, Q3: B（AI側matchScore算出）, Q4: B（Create+Update自動バージョン）
+**AI Response**: 回答分析完了。Q3=BによりBL-17（Lambda側matchScore算出）を廃止、AI Tool Use出力に統合。成果物生成完了。nfr-design-patterns.md（6セクション: AI推論パイプライン、キャッシュ、リトライ、コスト制御、インジェクション防止、PBT 7対象）。logical-components.md（5セクション: AIGateway内部モジュール6個、サービス層3個、FE連携、インフラ、設計変更注記）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Step 7
+
+---
+
+## Session End
+**Timestamp**: 2026-05-02T10:11:00Z
+**User Input**: "今日の作業はここまでにしておきます。"
+**AI Response**: セッション終了。コミット be36913。次回再開ポイント: Unit 2 AI Core — NFR Design レビュー → 承認 → Infrastructure Design。
+**Context**: Session pause. Unit 2 AI Core — NFR Design 成果物生成済み、レビュー待ち。
+
+---
+
+## Session Resume
+**Timestamp**: 2026-05-03T10:00:00Z
+**User Input**: "作業を再開します。"
+**AI Response**: セッション再開。前回中断ポイント: Unit 2 AI Core — NFR Design レビュー待ち。
+**Context**: Session continuity - NFR Design 承認待ち
+
+---
+
+## Unit 2 AI Core - NFR Design Change Request (F1-F9)
+**Timestamp**: 2026-05-03T10:01:00Z
+**User Input**: "High 3件（F1: リトライ時間上限矛盾、F2: キャッシュキー正規化不足、F3: 回数カウンター非原子性）+ Medium 3件（F4: flavorScoresハルシネーション、F5: 上流ドキュメント未反映、F6: Tool Useスキーマ制約不足）+ Low 3件（F7: ドライラン回数消費、F8: 単価ハードコード、F9: flavorDataサイズ上限）"
+**AI Response**: 9点すべて修正。F1: リトライ1回に制限（p99 15秒/8秒保証）。F2: キャッシュキーに料理カテゴリ正規化+mood 5バケット化+tasteProfile 0.1量子化を追加。F3: 回数カウンターをUpdateItem+ConditionExpression一発に修正（GetItem廃止）。F4: flavorScoresはLambda側SakenowaCache付与のハイブリッド方式。F5: BL-17/BL-11/BR-08-04/PBT表に「NFR Designで改訂」注記追加。F6: Tool Useスキーマに minItems/maxItems/minimum/maximum/maxLength/enum制約追加。F7: ドライランは回数枠消費しないと明記。F8: 単価テーブルの定義箇所と更新トリガーを運用メモ追記。F9: flavorDataを上位30銘柄に制限と明記。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Change Request
+
+---
+
+## Unit 2 AI Core - NFR Design Approved
+**Timestamp**: 2026-05-03T10:02:00Z
+**User Input**: "承認します。次の作業を始める前にコミットをお願いします。"
+**AI Response**: NFR Design 承認。コミット実行。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - NFR Design Complete - Approved
+
+---
+
+## Unit 2 AI Core - Infrastructure Design Plan & Questions Created
+**Timestamp**: 2026-05-03T10:03:00Z
+**AI Response**: Infrastructure Design計画と3問の質問を作成。質問内容: (1) Bedrockリージョン選択, (2) Lambda メモリサイズ, (3) Terraformモジュール構成
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Infrastructure Design Steps 1-4
+
+---
+
+## Unit 2 AI Core - Infrastructure Design Answers & Complete
+**Timestamp**: 2026-05-03T10:04:00Z
+**User Input**: Q1: A（東京リージョン）, Q2: B（512MB）, Q3: A（既存モジュールに追加）
+**AI Response**: 成果物生成完了。infrastructure-design.md（8セクション: Bedrock接続、Lambda4本、IAM2ロール、API Gateway3エンドポイント、Custom Resource、環境変数、監視5アラーム、ロググループ）。deployment-architecture.md（6セクション: Unit1共有関係、デプロイ手順、環境差分、Bedrockモデルアクセス、SECURITY準拠、ロールバック）。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Infrastructure Design Step 7
+
+---
+
+## Unit 2 AI Core - Infrastructure Design Change Request (H2+M5+L4)
+**Timestamp**: 2026-05-03T10:05:00Z
+**User Input**: "High 2件（H1: dynamodb:Query欠落、H2: Bedrock推論プロファイル要否）+ Medium 5件（M1: タイムアウト29秒上限、M2: SakenowaCache書込経路、M3: IAMワイルドカード、M4: dont-deployコスト攻撃面、M5: モジュールパスドリフト）+ Low 4件（L1: IAM Condition実装、L2: バージョン採番一意化、L3: ハンドラーパス不一致、L4: xray:PutTelemetryRecords）"
+**AI Response**: 11点すべて修正。H1: dynamodb:Query追加。H2: 推論プロファイル要否のデプロイ前チェックリスト+IAMパターン(a)(b)を明記、ワイルドカード廃止。M1: recommend 20秒、dont-deploy/meta 10秒に。M2: SakenowaCache書込はUnit3担当と明記。M3: H2で解消（2モデル限定）。M4: SECURITY-11にコスト攻撃面の意図的受容+最悪ケース試算を明記。M5: NFR Design側にinfra決定注記追加。L1: IAM Condition JSON例追記。L2: バージョン採番をTerraform変数が唯一の正と明記。L3: HCLハンドラーをindex.handler（esbuild出力）に統一。L4: xray:PutTelemetryRecords追加済み。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Infrastructure Design Change Request
+
+---
+
+## Unit 2 AI Core - Infrastructure Design Approved
+**Timestamp**: 2026-05-03T10:06:00Z
+**User Input**: "問題ありません。"
+**AI Response**: Infrastructure Design 承認。コミット実行。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Infrastructure Design Complete - Approved
+
+---
+
+## Unit 2 AI Core - Code Generation Plan Created
+**Timestamp**: 2026-05-03T10:07:00Z
+**AI Response**: Code Generation計画を作成。4フェーズ・17ステップ構成。Phase A: AIGateway本実装（Step 1-2: コア6モジュール + Tool Useスキーマ4個）、Phase B: バックエンド（Step 3-9: サービス3個 + ハンドラー4本 + テスト9+PBT5）、Phase C: フロントエンド（Step 10-14: PlanContext/PlanPage + BuildPage + i18n + テスト5）、Phase D: インフラ+デプロイ（Step 15-17: Terraform拡張 + プロンプト本文4個 + スクリプト更新）。7ストーリー（US-04,06,08,09,10,11,16）のトレーサビリティマッピング付き。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Code Generation Part 1 (Planning)
+
+---
+
+## Unit 2 AI Core - Code Generation Plan Change Request (H1+M4+L7)
+**Timestamp**: 2026-05-03T10:08:00Z
+**User Input**: "H1: shared-typesスキーマ定義ステップ欠落。M1: 料理カテゴリenum不整合。M2: プロンプト本文→シーダー受渡し未定義。M3: App.tsxルート差替えステップ無し。M4: API統合層・デバウンス暗黙。L1-L7: PBT取りこぼし、フロントPBT無し、テスト欠落、esbuildエントリ、Part1境界、AIGateway型所在、Unit3依存注記。"
+**AI Response**: 計画を全面再構成。H1: Step 1に shared-typesスキーマ追加を新設。M1: 料理カテゴリを8+other統一（domain-entities.mdも修正）。M2: 案A採用（シーダーにプロンプト本文バンドル、Step 7に明記）。M3: Step 13「App.tsxルート差替え」追加。M4: Step 11/12にhooks/api層+デバウンスを明記。L1: PBT 2件追加（Step 9）。L2: フロントPBT Step 16新設。L3: テスト3件追加（Step 15）。L4: esbuild自動glob注記（Step 18）。L5: Part1/2区分を補足欄で明記。L6: AIGateway型所在を依存関係欄に明記。L7: SakenowaCache空/スタブ前提を依存関係欄に明記。全19ステップに再編。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Code Generation Plan Change Request
+
+---
+
+## Unit 2 AI Core - Code Generation Plan Approved
+**Timestamp**: 2026-05-03T10:09:00Z
+**User Input**: "承認します。"
+**AI Response**: Code Generation計画承認。Part 2（実装）に進行。
+**Context**: CONSTRUCTION Phase - Unit 2 AI Core - Code Generation Part 1 Complete - Approved
+
+---
+
+## Session End
+**Timestamp**: 2026-05-03T11:00:00Z
+**User Input**: "今日の作業はここまでにしておきたいと思います。"
+**AI Response**: セッション終了。Unit 2 AI Core Code Generation Step 1-9 完了（Phase A + Phase B）。テスト全 GREEN。次回: Step 10（バックエンドサマリー）→ Step 11-17（フロントエンド）→ Step 18-19（インフラ+デプロイ）。
+**Context**: Session pause. Unit 2 AI Core Code Generation Phase A+B 完了。
+
+---
+
+## Session Resume
+**Timestamp**: 2026-05-10T10:00:00Z
+**User Input**: "作業を再開します。"
+**AI Response**: セッション再開。Unit 2 AI Core Code Generation Step 10 から継続。
+**Context**: Session continuity - Step 10〜19 残り
+
+---

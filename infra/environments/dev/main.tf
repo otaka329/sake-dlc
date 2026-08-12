@@ -18,6 +18,8 @@ module "api_gateway" {
   env                   = var.env
   cognito_user_pool_arn = module.cognito.user_pool_arn
   allowed_origin        = "http://localhost:5173"
+  # Unit 2: AI Core
+  lambda_invoke_arns = module.lambda_base.ai_lambda_invoke_arns
 }
 
 module "s3_cloudfront" {
@@ -27,14 +29,28 @@ module "s3_cloudfront" {
 }
 
 module "lambda_base" {
-  source                  = "../../modules/lambda-base"
-  env                     = var.env
-  users_table_arn         = module.dynamodb.users_table_arn
+  source                   = "../../modules/lambda-base"
+  env                      = var.env
+  users_table_arn          = module.dynamodb.users_table_arn
   taste_profiles_table_arn = module.dynamodb.taste_profiles_table_arn
-  app_data_table_arn      = module.dynamodb.app_data_table_arn
-  cognito_user_pool_arn   = module.cognito.user_pool_arn
-  backup_bucket_arn           = module.s3_cloudfront.logs_bucket_arn
-  log_retention_days          = 30
+  app_data_table_arn       = module.dynamodb.app_data_table_arn
+  cognito_user_pool_arn    = module.cognito.user_pool_arn
+  backup_bucket_arn        = module.s3_cloudfront.logs_bucket_arn
+  log_retention_days       = 30
+  # Unit 2: AI Core
+  sakenowa_cache_table_arn  = module.dynamodb.sakenowa_cache_table_arn
+  app_data_table_name       = module.dynamodb.app_data_table_name
+  users_table_name          = module.dynamodb.users_table_name
+  taste_profiles_table_name = module.dynamodb.taste_profiles_table_name
+  sakenowa_cache_table_name = module.dynamodb.sakenowa_cache_table_name
+  api_execution_arn         = module.api_gateway.rest_api_execution_arn
+  prompt_template_version   = "1"
+  prompt_templates = [
+    { templateId = "recommend", modelId = "anthropic.claude-3-5-sonnet-20241022-v2:0", maxTokens = 2000, temperature = 0.7, variables = ["dishes", "mood", "tasteProfile", "flavorData", "disclosureLevel", "locale"] },
+    { templateId = "dont-deploy", modelId = "anthropic.claude-3-haiku-20240307-v1:0", maxTokens = 500, temperature = 0.3, variables = ["conditionScore", "sleepHours", "tomorrowSchedule", "mood"] },
+    { templateId = "alternative-proposal", modelId = "anthropic.claude-3-haiku-20240307-v1:0", maxTokens = 500, temperature = 0.7, variables = ["season", "mood", "locale"] },
+    { templateId = "meta-response", modelId = "anthropic.claude-3-haiku-20240307-v1:0", maxTokens = 300, temperature = 0.5, variables = ["userMessage", "locale"] },
+  ]
 }
 
 module "monitoring" {

@@ -1,0 +1,30 @@
+{
+  "title": "Build",
+  "recommend": "推薦を受ける",
+  "loading": "推薦中...",
+  "metaQuestion": "飲むべき？",
+  "list": {
+    "title": "おすすめの日本酒",
+    "attribution": "データ提供: さけのわ (https://sakenowa.com)"
+  },
+  "card": {
+    "matchScore": "適合度",
+    "flavor": "フレーバー",
+    "temperature": "温度帯",
+    "amount": "適量"
+  },
+  "temp": {
+    "reishu": "冷酒",
+    "jouon": "常温",
+    "nurukan": "ぬる燗",
+    "atsukan": "熱燗"
+  },
+  "meta": {
+    "dismiss": "閉じる",
+    "action": {
+      "pause": "一息ついてみましょう",
+      "hydrate": "まずは水を一杯",
+      "reflect": "少し振り返ってみましょう"
+    }
+  }
+}
