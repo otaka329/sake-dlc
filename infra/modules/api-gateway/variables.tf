@@ -24,3 +24,9 @@ variable "manage_account_setting" {
   type        = bool
   default     = false
 }
+
+variable "auth_lambda_invoke_arns" {
+  description = "Unit 1 認証系 Lambda の invoke ARN マップ"
+  type        = map(string)
+  default     = {}
+}

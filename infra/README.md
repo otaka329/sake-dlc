@@ -122,10 +122,9 @@ text loader でバンドルに埋め込まれる（実行時 `readFileSync` は�
 
 ## 既知の注意点
 
-- **Unit 1 の Lambda 関数10本が Terraform に未定義** — `sdlc-signup-handler` 等の認証系ハンドラーは
-  IAM ロールとロググループだけが定義されており、`aws_lambda_function` リソースが存在しない。
-  そのため `deploy-backend.sh` は該当分をスキップし、最後に一覧を出して非ゼロ終了する。
-  Unit 1 側の対応が必要（API Gateway の認証系エンドポイントも同様に未定義）
+- **`deploy-backend.sh` は AWS 上に存在しない関数をスキップして非ゼロ終了する** —
+  Terraform 未 apply の状態で走らせた場合に「何もデプロイしていないのに成功」に見えないための挙動。
+  スキップされた関数名が一覧表示されるので、apply 漏れかどうかを確認すること
 
 - **CloudWatch アラームの dimensions 未指定** — Powertools Metrics は `service` ディメンションを自動付与するため、現状のアラームがメトリクスに一致しない可能性がある。デプロイ後にコンソールで実ディメンションを確認して追加すること
 - **`ErrorCount` の名前空間** — `create-handler.ts` が `SDLC/Foundation` に送出しているため、`SDLC/AIGateway` を見ている `ai_error_count` アラームは現状無反応。Unit 6 でメトリクス名前空間を整理する予定

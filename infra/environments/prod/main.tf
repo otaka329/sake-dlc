@@ -8,7 +8,7 @@ module "dynamodb" {
 module "cognito" {
   source                = "../../modules/cognito"
   env                   = var.env
-  pre_signup_lambda_arn = ""                                     # Lambda デプロイ後に設定
+  pre_signup_lambda_arn = module.lambda_base.presignup_lambda_arn
   callback_urls         = ["https://CLOUDFRONT_DOMAIN/callback"] # デプロイ後に更新
   logout_urls           = ["https://CLOUDFRONT_DOMAIN/login"]
 }
@@ -19,7 +19,8 @@ module "api_gateway" {
   cognito_user_pool_arn = module.cognito.user_pool_arn
   allowed_origin        = "https://CLOUDFRONT_DOMAIN" # デプロイ後に更新
   # Unit 2: AI Core
-  lambda_invoke_arns = module.lambda_base.ai_lambda_invoke_arns
+  lambda_invoke_arns      = module.lambda_base.ai_lambda_invoke_arns
+  auth_lambda_invoke_arns = module.lambda_base.auth_lambda_invoke_arns
 }
 
 module "s3_cloudfront" {
@@ -44,7 +45,11 @@ module "lambda_base" {
   taste_profiles_table_name = module.dynamodb.taste_profiles_table_name
   sakenowa_cache_table_name = module.dynamodb.sakenowa_cache_table_name
   api_execution_arn         = module.api_gateway.rest_api_execution_arn
-  prompt_template_version   = "1"
+  # Unit 1: 認証系 Lambda
+  drinking_logs_table_name = module.dynamodb.drinking_logs_table_name
+  cognito_user_pool_id     = module.cognito.user_pool_id
+  backup_bucket_name       = module.s3_cloudfront.logs_bucket_name
+  prompt_template_version  = "1"
   prompt_templates = [
     { templateId = "recommend", modelId = "anthropic.claude-3-5-sonnet-20241022-v2:0", maxTokens = 2000, temperature = 0.7, variables = ["dishes", "mood", "tasteProfile", "flavorData", "disclosureLevel", "locale"] },
     { templateId = "dont-deploy", modelId = "anthropic.claude-3-haiku-20240307-v1:0", maxTokens = 500, temperature = 0.3, variables = ["conditionScore", "sleepHours", "tomorrowSchedule", "mood"] },

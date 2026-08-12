@@ -193,12 +193,21 @@ resource "aws_api_gateway_deployment" "main" {
       aws_api_gateway_gateway_response.integration_timeout,
       aws_api_gateway_gateway_response.default_4xx,
       aws_api_gateway_gateway_response.default_5xx,
+      # Unit 2: AI Core
       aws_api_gateway_resource.recommend,
       aws_api_gateway_resource.dont_deploy,
       aws_api_gateway_resource.meta_response,
+      aws_api_gateway_method.recommend_post,
+      aws_api_gateway_method.dont_deploy_post,
+      aws_api_gateway_method.meta_response_post,
       aws_api_gateway_integration.recommend_post,
       aws_api_gateway_integration.dont_deploy_post,
       aws_api_gateway_integration.meta_response_post,
+      # Unit 1: 認証・プロファイル
+      values(aws_api_gateway_resource.auth_root),
+      values(aws_api_gateway_resource.mfa_sub),
+      values(aws_api_gateway_method.auth),
+      values(aws_api_gateway_integration.auth),
     ]))
   }
 

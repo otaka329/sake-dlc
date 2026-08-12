@@ -77,3 +77,18 @@ variable "sakenowa_cache_table_name" {
   description = "SakenowaCache テーブル名（Lambda 環境変数用）"
   type        = string
 }
+
+variable "drinking_logs_table_name" {
+  description = "DrinkingLogs テーブル名（Lambda 環境変数用）"
+  type        = string
+}
+
+variable "cognito_user_pool_id" {
+  description = "Cognito ユーザープール ID（日次バックアップ Lambda 用）"
+  type        = string
+}
+
+variable "backup_bucket_name" {
+  description = "Cognito バックアップ先 S3 バケット名"
+  type        = string
+}

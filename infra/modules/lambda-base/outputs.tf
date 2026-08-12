@@ -48,3 +48,14 @@ output "ai_role_arn" {
   description = "AI ハンドラー用 IAM ロール ARN"
   value       = aws_iam_role.ai_role.arn
 }
+
+# Unit 1: 認証系 Lambda invoke ARN マップ（API Gateway 統合用）
+output "auth_lambda_invoke_arns" {
+  description = "認証・プロファイル系 Lambda の invoke ARN マップ"
+  value       = { for k, v in aws_lambda_function.auth : k => v.invoke_arn }
+}
+
+output "presignup_lambda_arn" {
+  description = "Cognito PreSignUp トリガー Lambda の ARN"
+  value       = aws_lambda_function.presignup.arn
+}
